@@ -263,33 +263,6 @@
             color: #f44336;
         }
 
-        .fab {
-            position: fixed;
-            bottom: 16px;
-            right: 16px;
-            width: 56px;
-            height: 56px;
-            background: #ff4081;
-            border: none;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(255,64,129,0.4);
-            transition: all 0.2s;
-        }
-
-        .fab:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(255,64,129,0.5);
-        }
-
-        .fab .material-icons {
-            color: white;
-            font-size: 24px;
-        }
-
         .category-bread { background: linear-gradient(135deg, #ff9800, #ff6f00); }
         .category-dairy { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .category-meat { background: linear-gradient(135deg, #f44336, #d32f2f); }
@@ -299,10 +272,6 @@
     </style>
 </head>
 <body>
-
-
-
-
     <div class="content">
         <div class="recipes-stories">
             <div class="stories-container" id="storiesContainer">
@@ -320,7 +289,7 @@
         <div class="input-section">
             <div class="input-container">
                 <input type="text" class="input-field" placeholder="Добавить продукт..." id="productInput">
-                <button class="add-button" onclick="addProduct()">+</button>
+                <button class="add-button" onmousedown="startLongPress(event)" onmouseup="endLongPress(event)" ontouchstart="startLongPress(event)" ontouchend="endLongPress(event)" onmouseleave="endLongPress(event)">+</button>
             </div>
         </div>
 
@@ -329,16 +298,41 @@
         </div>
     </div>
 
-    <button class="fab" onclick="scrollToTop()">
-        <span class="material-icons">↑</span>
-    </button>
-
     <script>
         let currentRecipe = 'main';
         
         let recipeData = {
             main: { name: 'Список покупок', products: [] }
         };
+
+        let longPressTimer;
+        let isLongPress = false;
+
+        function startLongPress(event) {
+            event.preventDefault();
+            isLongPress = false;
+            longPressTimer = setTimeout(() => {
+                isLongPress = true;
+                createNewRecipe();
+            }, 600);
+        }
+
+        function endLongPress(event) {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+            
+            // Если это не был лонг тап, добавляем продукт
+            if (!isLongPress) {
+                setTimeout(addProduct, 100);
+            }
+            
+            // Сбрасываем флаг
+            setTimeout(() => {
+                isLongPress = false;
+            }, 200);
+        }
 
         function saveCurrentRecipeData() {
             const products = [];
@@ -365,10 +359,6 @@
             document.querySelector('[data-recipe="' + recipeId + '"]').classList.add('active');
         }
 
-        function updateAppTitle(title) {
-            document.getElementById('appTitle').textContent = title;
-        }
-
         function switchToRecipe(recipeId) {
             if (document.querySelectorAll('.item').length > 0) {
                 saveCurrentRecipeData();
@@ -377,7 +367,6 @@
             currentRecipe = recipeId;
             
             updateActiveStory(recipeId);
-            updateAppTitle(recipeData[recipeId].name);
             loadRecipeData(recipeId);
         }
 
@@ -688,13 +677,6 @@
             const items = categorySection.querySelectorAll('.item');
             const countElement = categorySection.querySelector('.category-count');
             countElement.textContent = items.length;
-        }
-
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
         }
 
         document.getElementById('productInput').addEventListener('keypress', function(e) {
