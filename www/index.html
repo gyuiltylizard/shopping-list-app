@@ -62,6 +62,7 @@
 
         .recipes-stories {
             margin-bottom: 16px;
+            display: none; /* Скрыто по умолчанию */
         }
 
         .stories-container {
@@ -315,10 +316,7 @@
     </style>
 </head>
 <body>
-    <div class="status-bar">
-        <span>9:41</span>
-        <span>📶 📶 📶 🔋</span>
-    </div>
+
 
     <div class="app-bar">
         <span class="menu-icon">≡</span>
@@ -331,18 +329,6 @@
                 <div class="story-item active" data-recipe="main" onclick="switchToRecipe('main')">
                     <div class="story-circle">🛒</div>
                     <div class="story-name">Основной</div>
-                </div>
-                <div class="story-item" data-recipe="borsch" onclick="switchToRecipe('borsch')">
-                    <div class="story-circle">🥘</div>
-                    <div class="story-name">Борщ</div>
-                </div>
-                <div class="story-item" data-recipe="pasta" onclick="switchToRecipe('pasta')">
-                    <div class="story-circle">🍝</div>
-                    <div class="story-name">Паста</div>
-                </div>
-                <div class="story-item" data-recipe="salad" onclick="switchToRecipe('salad')">
-                    <div class="story-circle">🥗</div>
-                    <div class="story-name">Салат</div>
                 </div>
                 <div class="story-item add-new" onclick="createNewRecipe()">
                     <div class="story-circle">+</div>
@@ -359,103 +345,7 @@
         </div>
 
         <div id="categoriesContainer">
-            <div class="category-section" data-category="bread">
-                <div class="category-header category-bread">
-                    <div class="category-title">
-                        <span style="font-size: 20px; margin-right: 8px;">🥖</span>
-                        Хлеб и выпечка
-                    </div>
-                    <div class="category-count">2</div>
-                </div>
-                <div class="category-items">
-                    <div class="item">
-                        <div class="checkbox" onclick="toggleItem(this)"></div>
-                        <div class="item-text">Хлеб белый</div>
-                        <span class="delete-button" onclick="deleteItem(this)">×</span>
-                    </div>
-                    <div class="item">
-                        <div class="checkbox" onclick="toggleItem(this)"></div>
-                        <div class="item-text">Булочки для гамбургеров</div>
-                        <span class="delete-button" onclick="deleteItem(this)">×</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="category-section" data-category="dairy">
-                <div class="category-header category-dairy">
-                    <div class="category-title">
-                        <span style="font-size: 20px; margin-right: 8px;">🥛</span>
-                        Молочные продукты
-                    </div>
-                    <div class="category-count">3</div>
-                </div>
-                <div class="category-items">
-                    <div class="item completed">
-                        <div class="checkbox checked" onclick="toggleItem(this)"></div>
-                        <div class="item-text">Молоко 3.2%</div>
-                        <span class="delete-button" onclick="deleteItem(this)">×</span>
-                    </div>
-                    <div class="item">
-                        <div class="checkbox" onclick="toggleItem(this)"></div>
-                        <div class="item-text">Творог 9%</div>
-                        <span class="delete-button" onclick="deleteItem(this)">×</span>
-                    </div>
-                    <div class="item">
-                        <div class="checkbox" onclick="toggleItem(this)"></div>
-                        <div class="item-text">Сметана</div>
-                        <span class="delete-button" onclick="deleteItem(this)">×</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="category-section" data-category="vegetables">
-                <div class="category-header category-vegetables">
-                    <div class="category-title">
-                        <span style="font-size: 20px; margin-right: 8px;">🥕</span>
-                        Овощи и фрукты
-                    </div>
-                    <div class="category-count">4</div>
-                </div>
-                <div class="category-items">
-                    <div class="item">
-                        <div class="checkbox" onclick="toggleItem(this)"></div>
-                        <div class="item-text">Помидоры</div>
-                        <span class="delete-button" onclick="deleteItem(this)">×</span>
-                    </div>
-                    <div class="item">
-                        <div class="checkbox" onclick="toggleItem(this)"></div>
-                        <div class="item-text">Огурцы</div>
-                        <span class="delete-button" onclick="deleteItem(this)">×</span>
-                    </div>
-                    <div class="item completed">
-                        <div class="checkbox checked" onclick="toggleItem(this)"></div>
-                        <div class="item-text">Яблоки</div>
-                        <span class="delete-button" onclick="deleteItem(this)">×</span>
-                    </div>
-                    <div class="item">
-                        <div class="checkbox" onclick="toggleItem(this)"></div>
-                        <div class="item-text">Бананы</div>
-                        <span class="delete-button" onclick="deleteItem(this)">×</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="category-section" data-category="sweets">
-                <div class="category-header category-sweets">
-                    <div class="category-title">
-                        <span style="font-size: 20px; margin-right: 8px;">🍰</span>
-                        Сладости
-                    </div>
-                    <div class="category-count">1</div>
-                </div>
-                <div class="category-items">
-                    <div class="item">
-                        <div class="checkbox" onclick="toggleItem(this)"></div>
-                        <div class="item-text">Шоколад молочный</div>
-                        <span class="delete-button" onclick="deleteItem(this)">×</span>
-                    </div>
-                </div>
-            </div>
+            <!-- Пустой список - продукты добавляются пользователем -->
         </div>
     </div>
 
@@ -467,10 +357,7 @@
         let currentRecipe = 'main';
         
         let recipeData = {
-            main: { name: 'Список покупок', products: [] },
-            borsch: { name: 'Борщ', products: [] },
-            pasta: { name: 'Паста', products: [] },
-            salad: { name: 'Салат', products: [] }
+            main: { name: 'Список покупок', products: [] }
         };
 
         function saveCurrentRecipeData() {
@@ -522,6 +409,12 @@
             const recipeId = 'recipe_' + Date.now();
             
             recipeData[recipeId] = { name: name, products: [] };
+            
+            // Показать stories-секцию при создании первого рецепта
+            const storiesSection = document.querySelector('.recipes-stories');
+            if (storiesSection.style.display === 'none') {
+                storiesSection.style.display = 'block';
+            }
             
             const newStory = document.createElement('div');
             newStory.className = 'story-item';
