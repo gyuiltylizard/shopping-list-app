@@ -374,7 +374,6 @@
             const name = prompt('Название нового рецепта:');
             if (!name) return;
             
-            const emoji = prompt('Выберите эмодзи для рецепта:', '🍽️');
             const recipeId = 'recipe_' + Date.now();
             
             recipeData[recipeId] = { name: name, products: [] };
@@ -390,7 +389,7 @@
             newStory.setAttribute('data-recipe', recipeId);
             newStory.onclick = function() { switchToRecipe(recipeId); };
             
-            newStory.innerHTML = '<div class="story-circle">' + (emoji || '🍽️') + '</div><div class="story-name">' + name + '</div>';
+            newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + name + '</div>';
             
             const addButton = document.querySelector('.story-item.add-new');
             addButton.parentNode.insertBefore(newStory, addButton);
