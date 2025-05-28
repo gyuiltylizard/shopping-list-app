@@ -1,0 +1,16 @@
+{
+  "appId": "com.gyuiltylizard.shoppinglist",
+  "appName": "Shopping List",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "buildOptions": {
+      "keystorePath": "",
+      "keystoreAlias": "",
+      "releaseType": "APK"
+    }
+  }
+}

@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список покупок</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .status-bar {
+            height: 24px;
+            background: #6200ea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .app-bar {
+            height: 56px;
+            background: #6200ea;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .app-bar h1 {
+            color: white;
+            font-size: 20px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .menu-icon {
+            color: white;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .content {
+            padding: 16px;
+            padding-bottom: 80px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .recipes-stories {
+            margin-bottom: 16px;
+        }
+
+        .stories-container {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 8px 4px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .stories-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .story-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 70px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .story-item:hover {
+            transform: scale(1.05);
+        }
+
+        .story-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 6px;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .story-item.active .story-circle {
+            border-color: #6200ea;
+            background: linear-gradient(135deg, #6200ea, #7c4dff);
+            color: white;
+        }
+
+        .story-item.add-new .story-circle {
+            background: linear-gradient(135deg, #ff4081, #f50057);
+            color: white;
+            font-size: 28px;
+            font-weight: 300;
+        }
+
+        .story-name {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            font-weight: 500;
+            max-width: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .story-item.active .story-name {
+            color: #6200ea;
+            font-weight: 600;
+        }
+
+        .input-section {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .input-field {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            padding: 12px 16px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .add-button {
+            background: #6200ea;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 24px;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+        }
+
+        .add-button:hover {
+            background: #5a00d6;
+            transform: scale(1.05);
+        }
+
+        .category-section {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #6200ea, #7c4dff);
+            color: white;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .category-title {
+            font-size: 18px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-count {
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .category-items {
+            padding: 8px 0;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .item:hover {
+            background: #f5f5f5;
+        }
+
+        .item.completed {
+            opacity: 0.6;
+        }
+
+        .item.completed .item-text {
+            text-decoration: line-through;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #6200ea;
+            border-radius: 4px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checkbox.checked {
+            background: #6200ea;
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .item-text {
+            flex: 1;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .delete-button {
+            color: #999;
+            cursor: pointer;
+            transition: color 0.2s;
+            font-size: 20px;
+        }
+
+        .delete-button:hover {
+            color: #f44336;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            background: #ff4081;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255,64,129,0.4);
+            transition: all 0.2s;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(255,64,129,0.5);
+        }
+
+        .fab .material-icons {
+            color: white;
+            font-size: 24px;
+        }
+
+        .category-bread { background: linear-gradient(135deg, #ff9800, #ff6f00); }
+        .category-dairy { background: linear-gradient(135deg, #2196f3, #1976d2); }
+        .category-meat { background: linear-gradient(135deg, #f44336, #d32f2f); }
+        .category-vegetables { background: linear-gradient(135deg, #4caf50, #388e3c); }
+        .category-sweets { background: linear-gradient(135deg, #e91e63, #c2185b); }
+        .category-grocery { background: linear-gradient(135deg, #9c27b0, #7b1fa2); }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <span>9:41</span>
+        <span>📶 📶 📶 🔋</span>
+    </div>
+
+    <div class="app-bar">
+        <span class="menu-icon">≡</span>
+        <h1 id="appTitle">Список покупок</h1>
+    </div>
+
+    <div class="content">
+        <div class="recipes-stories">
+            <div class="stories-container" id="storiesContainer">
+                <div class="story-item active" data-recipe="main" onclick="switchToRecipe('main')">
+                    <div class="story-circle">🛒</div>
+                    <div class="story-name">Основной</div>
+                </div>
+                <div class="story-item" data-recipe="borsch" onclick="switchToRecipe('borsch')">
+                    <div class="story-circle">🥘</div>
+                    <div class="story-name">Борщ</div>
+                </div>
+                <div class="story-item" data-recipe="pasta" onclick="switchToRecipe('pasta')">
+                    <div class="story-circle">🍝</div>
+                    <div class="story-name">Паста</div>
+                </div>
+                <div class="story-item" data-recipe="salad" onclick="switchToRecipe('salad')">
+                    <div class="story-circle">🥗</div>
+                    <div class="story-name">Салат</div>
+                </div>
+                <div class="story-item add-new" onclick="createNewRecipe()">
+                    <div class="story-circle">+</div>
+                    <div class="story-name">Новый</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <div class="input-container">
+                <input type="text" class="input-field" placeholder="Добавить продукт..." id="productInput">
+                <button class="add-button" onclick="addProduct()">+</button>
+            </div>
+        </div>
+
+        <div id="categoriesContainer">
+            <div class="category-section" data-category="bread">
+                <div class="category-header category-bread">
+                    <div class="category-title">
+                        <span style="font-size: 20px; margin-right: 8px;">🥖</span>
+                        Хлеб и выпечка
+                    </div>
+                    <div class="category-count">2</div>
+                </div>
+                <div class="category-items">
+                    <div class="item">
+                        <div class="checkbox" onclick="toggleItem(this)"></div>
+                        <div class="item-text">Хлеб белый</div>
+                        <span class="delete-button" onclick="deleteItem(this)">×</span>
+                    </div>
+                    <div class="item">
+                        <div class="checkbox" onclick="toggleItem(this)"></div>
+                        <div class="item-text">Булочки для гамбургеров</div>
+                        <span class="delete-button" onclick="deleteItem(this)">×</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-section" data-category="dairy">
+                <div class="category-header category-dairy">
+                    <div class="category-title">
+                        <span style="font-size: 20px; margin-right: 8px;">🥛</span>
+                        Молочные продукты
+                    </div>
+                    <div class="category-count">3</div>
+                </div>
+                <div class="category-items">
+                    <div class="item completed">
+                        <div class="checkbox checked" onclick="toggleItem(this)"></div>
+                        <div class="item-text">Молоко 3.2%</div>
+                        <span class="delete-button" onclick="deleteItem(this)">×</span>
+                    </div>
+                    <div class="item">
+                        <div class="checkbox" onclick="toggleItem(this)"></div>
+                        <div class="item-text">Творог 9%</div>
+                        <span class="delete-button" onclick="deleteItem(this)">×</span>
+                    </div>
+                    <div class="item">
+                        <div class="checkbox" onclick="toggleItem(this)"></div>
+                        <div class="item-text">Сметана</div>
+                        <span class="delete-button" onclick="deleteItem(this)">×</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-section" data-category="vegetables">
+                <div class="category-header category-vegetables">
+                    <div class="category-title">
+                        <span style="font-size: 20px; margin-right: 8px;">🥕</span>
+                        Овощи и фрукты
+                    </div>
+                    <div class="category-count">4</div>
+                </div>
+                <div class="category-items">
+                    <div class="item">
+                        <div class="checkbox" onclick="toggleItem(this)"></div>
+                        <div class="item-text">Помидоры</div>
+                        <span class="delete-button" onclick="deleteItem(this)">×</span>
+                    </div>
+                    <div class="item">
+                        <div class="checkbox" onclick="toggleItem(this)"></div>
+                        <div class="item-text">Огурцы</div>
+                        <span class="delete-button" onclick="deleteItem(this)">×</span>
+                    </div>
+                    <div class="item completed">
+                        <div class="checkbox checked" onclick="toggleItem(this)"></div>
+                        <div class="item-text">Яблоки</div>
+                        <span class="delete-button" onclick="deleteItem(this)">×</span>
+                    </div>
+                    <div class="item">
+                        <div class="checkbox" onclick="toggleItem(this)"></div>
+                        <div class="item-text">Бананы</div>
+                        <span class="delete-button" onclick="deleteItem(this)">×</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-section" data-category="sweets">
+                <div class="category-header category-sweets">
+                    <div class="category-title">
+                        <span style="font-size: 20px; margin-right: 8px;">🍰</span>
+                        Сладости
+                    </div>
+                    <div class="category-count">1</div>
+                </div>
+                <div class="category-items">
+                    <div class="item">
+                        <div class="checkbox" onclick="toggleItem(this)"></div>
+                        <div class="item-text">Шоколад молочный</div>
+                        <span class="delete-button" onclick="deleteItem(this)">×</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="fab" onclick="scrollToTop()">
+        <span class="material-icons">↑</span>
+    </button>
+
+    <script>
+        let currentRecipe = 'main';
+        
+        let recipeData = {
+            main: { name: 'Список покупок', products: [] },
+            borsch: { name: 'Борщ', products: [] },
+            pasta: { name: 'Паста', products: [] },
+            salad: { name: 'Салат', products: [] }
+        };
+
+        function saveCurrentRecipeData() {
+            const products = [];
+            document.querySelectorAll('.item').forEach(item => {
+                const text = item.querySelector('.item-text').textContent;
+                const isCompleted = item.classList.contains('completed');
+                const categorySection = item.closest('.category-section');
+                const categoryId = categorySection.getAttribute('data-category');
+                
+                products.push({
+                    text: text,
+                    completed: isCompleted,
+                    category: categoryId
+                });
+            });
+            
+            recipeData[currentRecipe].products = products;
+        }
+
+        function updateActiveStory(recipeId) {
+            document.querySelectorAll('.story-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector('[data-recipe="' + recipeId + '"]').classList.add('active');
+        }
+
+        function updateAppTitle(title) {
+            document.getElementById('appTitle').textContent = title;
+        }
+
+        function switchToRecipe(recipeId) {
+            if (document.querySelectorAll('.item').length > 0) {
+                saveCurrentRecipeData();
+            }
+            
+            currentRecipe = recipeId;
+            
+            updateActiveStory(recipeId);
+            updateAppTitle(recipeData[recipeId].name);
+            loadRecipeData(recipeId);
+        }
+
+        function createNewRecipe() {
+            const name = prompt('Название нового рецепта:');
+            if (!name) return;
+            
+            const emoji = prompt('Выберите эмодзи для рецепта:', '🍽️');
+            const recipeId = 'recipe_' + Date.now();
+            
+            recipeData[recipeId] = { name: name, products: [] };
+            
+            const newStory = document.createElement('div');
+            newStory.className = 'story-item';
+            newStory.setAttribute('data-recipe', recipeId);
+            newStory.onclick = function() { switchToRecipe(recipeId); };
+            
+            newStory.innerHTML = '<div class="story-circle">' + (emoji || '🍽️') + '</div><div class="story-name">' + name + '</div>';
+            
+            const addButton = document.querySelector('.story-item.add-new');
+            addButton.parentNode.insertBefore(newStory, addButton);
+            
+            switchToRecipe(recipeId);
+        }
+
+        function loadRecipeData(recipeId) {
+            document.getElementById('categoriesContainer').innerHTML = '';
+            
+            const products = recipeData[recipeId].products;
+            
+            products.forEach(product => {
+                addProductToUI(product.text, product.category, product.completed);
+            });
+        }
+
+        function addProductToUI(productText, categoryId, isCompleted) {
+            isCompleted = isCompleted || false;
+            const category = categories[categoryId];
+            
+            let categorySection = document.querySelector('[data-category="' + categoryId + '"]');
+            
+            if (!categorySection) {
+                categorySection = createCategorySection(categoryId, category);
+                document.getElementById('categoriesContainer').appendChild(categorySection);
+            }
+            
+            const itemsContainer = categorySection.querySelector('.category-items');
+            const item = createProductItem(productText);
+            
+            if (isCompleted) {
+                item.classList.add('completed');
+                item.querySelector('.checkbox').classList.add('checked');
+            }
+            
+            itemsContainer.appendChild(item);
+            updateCategoryCount(categorySection);
+        }
+
+        const categories = {
+            'bread': {
+                name: 'Хлеб и выпечка',
+                icon: '🥖',
+                class: 'category-bread',
+                keywords: ['хлеб', 'булочка', 'батон', 'багет', 'лаваш', 'пита', 'круассан', 'кекс', 'пирог', 'торт', 'печенье', 'сушки', 'баранки']
+            },
+            'dairy': {
+                name: 'Молочные продукты',
+                icon: '🥛',
+                class: 'category-dairy',
+                keywords: ['молоко', 'кефир', 'ряженка', 'творог', 'сметана', 'йогурт', 'сыр', 'масло', 'сливки', 'простокваша']
+            },
+            'meat': {
+                name: 'Мясо и рыба',
+                icon: '🥩',
+                class: 'category-meat',
+                keywords: ['мясо', 'говядина', 'свинина', 'курица', 'индейка', 'рыба', 'колбаса', 'сосиски', 'фарш', 'котлеты', 'окорок', 'бекон']
+            },
+            'vegetables': {
+                name: 'Овощи и фрукты',
+                icon: '🥕',
+                class: 'category-vegetables',
+                keywords: ['помидор', 'огурец', 'морковь', 'лук', 'картофель', 'капуста', 'яблоко', 'банан', 'апельсин', 'груша', 'виноград', 'клубника', 'авокадо', 'перец', 'чеснок']
+            },
+            'sweets': {
+                name: 'Сладости',
+                icon: '🍰',
+                class: 'category-sweets',
+                keywords: ['шоколад', 'конфеты', 'мармелад', 'зефир', 'пастила', 'халва', 'карамель', 'леденцы', 'жвачка', 'мороженое']
+            },
+            'grocery': {
+                name: 'Бакалея',
+                icon: '📦',
+                class: 'category-grocery',
+                keywords: ['крупа', 'рис', 'гречка', 'макароны', 'мука', 'сахар', 'соль', 'масло', 'уксус', 'специи', 'консервы', 'чай', 'кофе', 'сок']
+            }
+        };
+
+        function parseProduct(input) {
+            const text = input.trim();
+            
+            const patterns = [
+                /^(\d+)\s+(.+)$/,
+                /^(\d+)\s*шт\.?\s+(.+)$/i,
+                /^(\d+)\s*штук[иа]?\s+(.+)$/i,
+                /^(\d+)\s*кг\.?\s+(.+)$/i,
+                /^(\d+)\s*л\.?\s+(.+)$/i,
+                /^(\d+)\s*г\.?\s+(.+)$/i
+            ];
+            
+            for (let pattern of patterns) {
+                const match = text.match(pattern);
+                if (match) {
+                    const quantity = parseInt(match[1]);
+                    const name = match[2].trim();
+                    return { name, quantity };
+                }
+            }
+            
+            return { name: text, quantity: 1 };
+        }
+
+        function categorizeProduct(productName) {
+            const name = productName.toLowerCase();
+            
+            for (let categoryId in categories) {
+                const category = categories[categoryId];
+                for (let keyword of category.keywords) {
+                    if (name.includes(keyword)) {
+                        return categoryId;
+                    }
+                }
+            }
+            
+            return 'grocery';
+        }
+
+        function addProduct() {
+            const input = document.getElementById('productInput');
+            const inputText = input.value.trim();
+            
+            if (!inputText) return;
+            
+            const parsed = parseProduct(inputText);
+            const categoryId = categorizeProduct(parsed.name);
+            
+            let displayName = parsed.name;
+            if (parsed.quantity > 1) {
+                displayName += ' (' + parsed.quantity + ' шт)';
+            }
+            
+            // Проверить, есть ли уже такой продукт в основном списке
+            let existingStatus = false;
+            if (currentRecipe !== 'main') {
+                const mainProducts = recipeData.main.products;
+                for (let i = 0; i < mainProducts.length; i++) {
+                    if (mainProducts[i].text === displayName) {
+                        existingStatus = mainProducts[i].completed;
+                        break;
+                    }
+                }
+            }
+            
+            addProductToUI(displayName, categoryId, existingStatus);
+            
+            // Если это не основной список, добавить в основной список
+            if (currentRecipe !== 'main') {
+                // Проверить, нет ли уже такого продукта в основном списке
+                let alreadyExists = false;
+                const mainProducts = recipeData.main.products;
+                for (let i = 0; i < mainProducts.length; i++) {
+                    if (mainProducts[i].text === displayName) {
+                        alreadyExists = true;
+                        break;
+                    }
+                }
+                
+                if (!alreadyExists) {
+                    recipeData.main.products.push({
+                        text: displayName,
+                        completed: existingStatus,
+                        category: categoryId
+                    });
+                }
+            }
+            
+            input.value = '';
+        }
+
+        function createCategorySection(categoryId, category) {
+            const section = document.createElement('div');
+            section.className = 'category-section';
+            section.setAttribute('data-category', categoryId);
+            
+            section.innerHTML = '<div class="category-header ' + category.class + '"><div class="category-title"><span style="font-size: 20px; margin-right: 8px;">' + category.icon + '</span>' + category.name + '</div><div class="category-count">0</div></div><div class="category-items"></div>';
+            
+            return section;
+        }
+
+        function createProductItem(productName) {
+            const item = document.createElement('div');
+            item.className = 'item';
+            
+            item.innerHTML = '<div class="checkbox" onclick="toggleItem(this)"></div><div class="item-text">' + productName + '</div><span class="delete-button" onclick="deleteItem(this)">×</span>';
+            
+            return item;
+        }
+
+        function toggleItem(checkbox) {
+            const item = checkbox.closest('.item');
+            const isChecked = checkbox.classList.contains('checked');
+            const productText = item.querySelector('.item-text').textContent;
+            
+            if (isChecked) {
+                checkbox.classList.remove('checked');
+                item.classList.remove('completed');
+                syncProductStatus(productText, false);
+            } else {
+                checkbox.classList.add('checked');
+                item.classList.add('completed');
+                syncProductStatus(productText, true);
+            }
+        }
+
+        function syncProductStatus(productText, isCompleted) {
+            // Синхронизировать во всех рецептах
+            for (let recipeId in recipeData) {
+                const products = recipeData[recipeId].products;
+                for (let i = 0; i < products.length; i++) {
+                    if (products[i].text === productText) {
+                        products[i].completed = isCompleted;
+                    }
+                }
+            }
+            
+            // Обновить визуально во всех видимых элементах на странице
+            document.querySelectorAll('.item').forEach(itemElement => {
+                const itemText = itemElement.querySelector('.item-text').textContent;
+                if (itemText === productText) {
+                    const itemCheckbox = itemElement.querySelector('.checkbox');
+                    if (isCompleted) {
+                        itemCheckbox.classList.add('checked');
+                        itemElement.classList.add('completed');
+                    } else {
+                        itemCheckbox.classList.remove('checked');
+                        itemElement.classList.remove('completed');
+                    }
+                }
+            });
+        }
+
+        function deleteItem(deleteButton) {
+            const item = deleteButton.closest('.item');
+            const categorySection = deleteButton.closest('.category-section');
+            const productText = item.querySelector('.item-text').textContent;
+            
+            // Удалить из данных текущего рецепта
+            const currentProducts = recipeData[currentRecipe].products;
+            for (let i = currentProducts.length - 1; i >= 0; i--) {
+                if (currentProducts[i].text === productText) {
+                    currentProducts.splice(i, 1);
+                    break;
+                }
+            }
+            
+            // Проверить, есть ли этот продукт в других рецептах
+            let existsInOtherRecipes = false;
+            for (let recipeId in recipeData) {
+                if (recipeId !== currentRecipe) {
+                    const products = recipeData[recipeId].products;
+                    for (let i = 0; i < products.length; i++) {
+                        if (products[i].text === productText) {
+                            existsInOtherRecipes = true;
+                            break;
+                        }
+                    }
+                    if (existsInOtherRecipes) break;
+                }
+            }
+            
+            // Если продукт не используется в других рецептах и мы не в основном списке,
+            // удалить его и из основного списка
+            if (!existsInOtherRecipes && currentRecipe !== 'main') {
+                const mainProducts = recipeData.main.products;
+                for (let i = mainProducts.length - 1; i >= 0; i--) {
+                    if (mainProducts[i].text === productText) {
+                        mainProducts.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+            
+            item.remove();
+            updateCategoryCount(categorySection);
+            
+            const itemsContainer = categorySection.querySelector('.category-items');
+            if (itemsContainer.children.length === 0) {
+                categorySection.remove();
+            }
+        }
+
+        function updateCategoryCount(categorySection) {
+            const items = categorySection.querySelectorAll('.item');
+            const countElement = categorySection.querySelector('.category-count');
+            countElement.textContent = items.length;
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        document.getElementById('productInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addProduct();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.querySelectorAll('.item').length > 0) {
+                saveCurrentRecipeData();
+            }
+            
+            document.querySelectorAll('.category-section').forEach(updateCategoryCount);
+        });
+    </script>
+</body>
+</html>
