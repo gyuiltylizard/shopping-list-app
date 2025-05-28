@@ -263,12 +263,28 @@
             color: #f44336;
         }
 
-        .category-bread { background: linear-gradient(135deg, #ff9800, #ff6f00); }
-        .category-dairy { background: linear-gradient(135deg, #2196f3, #1976d2); }
-        .category-meat { background: linear-gradient(135deg, #f44336, #d32f2f); }
-        .category-vegetables { background: linear-gradient(135deg, #4caf50, #388e3c); }
-        .category-sweets { background: linear-gradient(135deg, #e91e63, #c2185b); }
-        .category-grocery { background: linear-gradient(135deg, #9c27b0, #7b1fa2); }
+        .back-button {
+            background: #f8f9fa;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #6200ea;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-button:hover {
+            background: #e9ecef;
+        }
+        
+        .back-button.show {
+            display: flex;
+        }
     </style>
 </head>
 <body>
@@ -307,6 +323,35 @@
 
         let longPressTimer;
         let isLongPress = false;
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        // Обработка свайпов
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            if (!touchStartX || !touchStartY) return;
+
+            let touchEndX = e.changedTouches[0].clientX;
+            let touchEndY = e.changedTouches[0].clientY;
+            
+            let diffX = touchStartX - touchEndX;
+            let diffY = touchStartY - touchEndY;
+            
+            // Проверяем что это горизонтальный свайп (а не вертикальный)
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                // Свайп влево для возврата к основному списку
+                if (diffX > 50 && currentRecipe !== 'main') {
+                    switchToRecipe('main');
+                }
+            }
+            
+            touchStartX = 0;
+            touchStartY = 0;
+        });
 
         function startLongPress(event) {
             event.preventDefault();
@@ -368,6 +413,14 @@
             
             updateActiveStory(recipeId);
             loadRecipeData(recipeId);
+            
+            // Показать/скрыть кнопку "Назад"
+            const backButton = document.getElementById('backButton');
+            if (recipeId === 'main') {
+                backButton.classList.remove('show');
+            } else {
+                backButton.classList.add('show');
+            }
         }
 
         function createNewRecipe() {
