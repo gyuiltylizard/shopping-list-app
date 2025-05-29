@@ -103,7 +103,7 @@
         }
 
         .back-button {
-            display: none; /* Убираем кнопку назад */
+            display: none;
         }
 
         .input-section {
@@ -263,25 +263,23 @@
     <div class="content" id="contentArea">
         <div class="recipes-stories">
             <div class="stories-container" id="storiesContainer">
-                <div class="story-item active" data-recipe="main" onclick="switchToRecipe('main')">
+                <div class="story-item active" data-recipe="main" id="mainStoryItem">
                     <div class="story-circle">🛒</div>
                     <div class="story-name">Основной</div>
                 </div>
-                <div class="story-item add-new" onclick="createNewRecipe()">
+                <div class="story-item add-new" id="addNewRecipeButton">
                     <div class="story-circle">+</div>
                     <div class="story-name">Новый</div>
                 </div>
             </div>
         </div>
 
-        <button class="back-button" id="backButton" onclick="switchToRecipe('main')" style="display: none;">
-            ← Назад
-        </button>
+        <button class="back-button" id="backButton" style="display: none;">← Назад</button>
 
         <div class="input-section">
             <div class="input-container">
                 <input type="text" class="input-field" placeholder="Добавить продукт..." id="productInput">
-                <button class="add-button" onclick="addProduct()">+</button>
+                <button class="add-button" id="addProductButton">+</button>
             </div>
         </div>
 
@@ -342,7 +340,6 @@
             }
         };
 
-        // Функции сохранения и загрузки данных
         function saveData() {
             const dataToSave = {
                 recipeData: recipeData,
@@ -369,40 +366,6 @@
             }
         }
 
-        function restoreStories() {
-            const storiesContainer = document.getElementById('storiesContainer');
-            
-            // Сохраняем ссылки на существующие элементы
-            const mainStory = storiesContainer.querySelector('[data-recipe="main"]');
-            const addButton = storiesContainer.querySelector('.add-new');
-            
-            // Очищаем только дополнительные рецепты
-            const existingRecipes = storiesContainer.querySelectorAll('[data-recipe]:not([data-recipe="main"])');
-            existingRecipes.forEach(recipe => recipe.remove());
-            
-            // Добавляем восстановленные рецепты
-            Object.keys(recipeData).forEach(recipeId => {
-                if (recipeId !== 'main') {
-                    const recipe = recipeData[recipeId];
-                    const newStory = document.createElement('div');
-                    newStory.className = 'story-item';
-                    newStory.setAttribute('data-recipe', recipeId);
-                    
-                    // Используем встроенные обработчики для надежности
-                    newStory.setAttribute('onclick', 'switchToRecipe("' + recipeId + '")');
-                    newStory.setAttribute('onmousedown', 'startStoryLongPress(event, this)');
-                    newStory.setAttribute('onmouseup', 'endStoryLongPress(event)');
-                    newStory.setAttribute('ontouchstart', 'startStoryLongPress(event, this)');
-                    newStory.setAttribute('ontouchend', 'endStoryLongPress(event)');
-                    
-                    newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + recipe.name + '</div>';
-                    
-                    // Вставляем перед кнопкой добавления
-                    storiesContainer.insertBefore(newStory, addButton);
-                }
-            });
-        }
-
         function startStoryLongPress(event, element) {
             event.preventDefault();
             longPressTarget = element;
@@ -420,6 +383,39 @@
                 longPressTimer = null;
             }
             longPressTarget = null;
+        }
+
+        function restoreStories() {
+            const storiesContainer = document.getElementById('storiesContainer');
+            const addButton = document.getElementById('addNewRecipeButton');
+            
+            // Удаляем существующие дополнительные списки
+            const existingRecipes = storiesContainer.querySelectorAll('[data-recipe]:not([data-recipe="main"])');
+            existingRecipes.forEach(recipe => recipe.remove());
+            
+            // Добавляем восстановленные рецепты
+            Object.keys(recipeData).forEach(recipeId => {
+                if (recipeId !== 'main') {
+                    const recipe = recipeData[recipeId];
+                    const newStory = document.createElement('div');
+                    newStory.className = 'story-item';
+                    newStory.setAttribute('data-recipe', recipeId);
+                    
+                    // Используем addEventListener вместо inline-атрибутов
+                    newStory.addEventListener('click', () => switchToRecipe(recipeId));
+                    
+                    // Обработчики долгого нажатия
+                    newStory.addEventListener('mousedown', (event) => startStoryLongPress(event, newStory));
+                    newStory.addEventListener('mouseup', endStoryLongPress);
+                    newStory.addEventListener('touchstart', (event) => startStoryLongPress(event, newStory));
+                    newStory.addEventListener('touchend', endStoryLongPress);
+                    
+                    newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + recipe.name + '</div>';
+                    
+                    // Вставляем перед кнопкой добавления
+                    storiesContainer.insertBefore(newStory, addButton);
+                }
+            });
         }
 
         function saveCurrentRecipeData() {
@@ -448,7 +444,7 @@
         }
 
         function switchToRecipe(recipeId) {
-            console.log('Переключение на рецепт:', recipeId); // Для отладки
+            console.log('Переключение на рецепт:', recipeId);
             
             if (document.querySelectorAll('.item').length > 0) {
                 saveCurrentRecipeData();
@@ -470,21 +466,26 @@
             
             recipeData[recipeId] = { name: name, products: [] };
             
+            const storiesContainer = document.getElementById('storiesContainer');
+            const addButton = document.getElementById('addNewRecipeButton');
+            
             const newStory = document.createElement('div');
             newStory.className = 'story-item';
             newStory.setAttribute('data-recipe', recipeId);
             
-            // Простое решение - используем встроенные обработчики
-            newStory.setAttribute('onclick', 'switchToRecipe("' + recipeId + '")');
-            newStory.setAttribute('onmousedown', 'startStoryLongPress(event, this)');
-            newStory.setAttribute('onmouseup', 'endStoryLongPress(event)');
-            newStory.setAttribute('ontouchstart', 'startStoryLongPress(event, this)');
-            newStory.setAttribute('ontouchend', 'endStoryLongPress(event)');
+            // Используем addEventListener вместо inline-атрибутов
+            newStory.addEventListener('click', () => switchToRecipe(recipeId));
+            
+            // Обработчики долгого нажатия
+            newStory.addEventListener('mousedown', (event) => startStoryLongPress(event, newStory));
+            newStory.addEventListener('mouseup', endStoryLongPress);
+            newStory.addEventListener('touchstart', (event) => startStoryLongPress(event, newStory));
+            newStory.addEventListener('touchend', endStoryLongPress);
             
             newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + name + '</div>';
             
-            const addButton = document.querySelector('.story-item.add-new');
-            addButton.parentNode.insertBefore(newStory, addButton);
+            // Вставляем перед кнопкой добавления
+            storiesContainer.insertBefore(newStory, addButton);
             
             switchToRecipe(recipeId);
             saveData();
@@ -512,29 +513,6 @@
             products.forEach(product => {
                 addProductToUI(product.text, product.category, product.completed);
             });
-        }
-
-        function addProductToUI(productText, categoryId, isCompleted) {
-            isCompleted = isCompleted || false;
-            const category = categories[categoryId];
-            
-            let categorySection = document.querySelector('[data-category="' + categoryId + '"]');
-            
-            if (!categorySection) {
-                categorySection = createCategorySection(categoryId, category);
-                document.getElementById('categoriesContainer').appendChild(categorySection);
-            }
-            
-            const itemsContainer = categorySection.querySelector('.category-items');
-            const item = createProductItem(productText);
-            
-            if (isCompleted) {
-                item.classList.add('completed');
-                item.querySelector('.checkbox').classList.add('checked');
-            }
-            
-            itemsContainer.appendChild(item);
-            updateCategoryCount(categorySection);
         }
 
         function parseProduct(input) {
@@ -574,6 +552,29 @@
             }
             
             return 'grocery';
+        }
+
+        function addProductToUI(productText, categoryId, isCompleted) {
+            isCompleted = isCompleted || false;
+            const category = categories[categoryId];
+            
+            let categorySection = document.querySelector('[data-category="' + categoryId + '"]');
+            
+            if (!categorySection) {
+                categorySection = createCategorySection(categoryId, category);
+                document.getElementById('categoriesContainer').appendChild(categorySection);
+            }
+            
+            const itemsContainer = categorySection.querySelector('.category-items');
+            const item = createProductItem(productText);
+            
+            if (isCompleted) {
+                item.classList.add('completed');
+                item.querySelector('.checkbox').classList.add('checked');
+            }
+            
+            itemsContainer.appendChild(item);
+            updateCategoryCount(categorySection);
         }
 
         function addProduct() {
@@ -744,16 +745,58 @@
             countElement.textContent = items.length;
         }
 
-        function startLongPress(event) {
-            // Больше не используется
+        function handleTouchStart(e) {
+            if (currentRecipe === 'main') return;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
         }
 
-        function endLongPress(event) {
-            // Больше не используется
+        function handleTouchEnd(e) {
+            if (currentRecipe === 'main' || !touchStartX || !touchStartY) return;
+
+            let touchEndX = e.changedTouches[0].clientX;
+            let touchEndY = e.changedTouches[0].clientY;
+            
+            let diffX = touchStartX - touchEndX;
+            let diffY = touchStartY - touchEndY;
+            
+            if (Math.abs(diffX) > Math.abs(diffY) && diffX > 80) {
+                e.preventDefault();
+                switchToRecipe('main');
+            }
+            
+            touchStartX = 0;
+            touchStartY = 0;
         }
 
         // Инициализация
         document.addEventListener('DOMContentLoaded', function() {
+            // Основной список
+            const mainStoryItem = document.getElementById('mainStoryItem');
+            mainStoryItem.addEventListener('click', () => switchToRecipe('main'));
+
+            // Кнопка создания нового списка
+            const addNewRecipeButton = document.getElementById('addNewRecipeButton');
+            addNewRecipeButton.addEventListener('click', createNewRecipe);
+
+            // Кнопка добавления продукта
+            const addProductButton = document.getElementById('addProductButton');
+            addProductButton.addEventListener('click', addProduct);
+
+            // Ввод продукта по Enter
+            const productInput = document.getElementById('productInput');
+            productInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addProduct();
+                }
+            });
+
+            // Обработка свайпа на мобильных устройствах
+            const contentArea = document.getElementById('contentArea');
+            contentArea.addEventListener('touchstart', handleTouchStart);
+            contentArea.addEventListener('touchend', handleTouchEnd);
+            
+            // Загружаем данные
             loadData();
             
             if (document.querySelectorAll('.item').length > 0) {
@@ -761,39 +804,6 @@
             }
             
             document.querySelectorAll('.category-section').forEach(updateCategoryCount);
-            
-            const contentArea = document.getElementById('contentArea');
-            if (contentArea) {
-                contentArea.addEventListener('touchstart', function(e) {
-                    if (currentRecipe === 'main') return;
-                    touchStartX = e.touches[0].clientX;
-                    touchStartY = e.touches[0].clientY;
-                });
-
-                contentArea.addEventListener('touchend', function(e) {
-                    if (currentRecipe === 'main' || !touchStartX || !touchStartY) return;
-
-                    let touchEndX = e.changedTouches[0].clientX;
-                    let touchEndY = e.changedTouches[0].clientY;
-                    
-                    let diffX = touchStartX - touchEndX;
-                    let diffY = touchStartY - touchEndY;
-                    
-                    if (Math.abs(diffX) > Math.abs(diffY) && diffX > 80) {
-                        e.preventDefault();
-                        switchToRecipe('main');
-                    }
-                    
-                    touchStartX = 0;
-                    touchStartY = 0;
-                });
-            }
-        });
-
-        document.getElementById('productInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addProduct();
-            }
         });
     </script>
 </body>
