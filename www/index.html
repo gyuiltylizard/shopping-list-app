@@ -489,9 +489,12 @@ function restoreStories() {
             // Открытие рецепта — только click!
             newStory.addEventListener('click', () => switchToRecipe(recipeId));
 
-            // Лонгтап на мобильных
+            // Лонгтап на мобильных (touch)
             newStory.addEventListener('touchstart', function () {
-                longPressTimer = setTimeout(() => handleStoryLongPress(newStory), 600);
+                longPressTimer = setTimeout(() => {
+                    handleStoryLongPress(newStory);
+                    longPressTimer = null;
+                }, 700); // чуть больше для надежности
             });
             newStory.addEventListener('touchend', function () {
                 if (longPressTimer) {
@@ -502,7 +505,10 @@ function restoreStories() {
 
             // Лонгтап на десктопе (мышь)
             newStory.addEventListener('mousedown', function () {
-                longPressTimer = setTimeout(() => handleStoryLongPress(newStory), 600);
+                longPressTimer = setTimeout(() => {
+                    handleStoryLongPress(newStory);
+                    longPressTimer = null;
+                }, 700);
             });
             newStory.addEventListener('mouseup', function () {
                 if (longPressTimer) {
