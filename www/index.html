@@ -282,8 +282,28 @@
             background: #e9ecef;
         }
         
-        .back-button.show {
+        .fab-add-recipe {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #ff4081, #f50057);
+            border: none;
+            border-radius: 50%;
             display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255,64,129,0.4);
+            transition: all 0.2s;
+            font-size: 24px;
+            z-index: 1000;
+        }
+
+        .fab-add-recipe:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(255,64,129,0.5);
         }
     </style>
 </head>
@@ -305,7 +325,7 @@
         <div class="input-section">
             <div class="input-container">
                 <input type="text" class="input-field" placeholder="Добавить продукт..." id="productInput">
-                <button class="add-button" onmousedown="startLongPress(event)" onmouseup="endLongPress(event)" ontouchstart="startLongPress(event)" ontouchend="endLongPress(event)" onmouseleave="endLongPress(event)">+</button>
+                <button class="add-button" onclick="addProduct()">+</button>
             </div>
         </div>
 
@@ -313,6 +333,10 @@
             <!-- Пустой список - продукты добавляются пользователем -->
         </div>
     </div>
+
+    <button class="fab-add-recipe" onclick="createNewRecipe()" title="Добавить новый список">
+        📝
+    </button>
 
     <script>
         let currentRecipe = 'main';
@@ -326,57 +350,85 @@
         let touchStartX = 0;
         let touchStartY = 0;
 
-        // Обработка свайпов
-        document.addEventListener('touchstart', function(e) {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        });
-
-        document.addEventListener('touchend', function(e) {
-            if (!touchStartX || !touchStartY) return;
-
-            let touchEndX = e.changedTouches[0].clientX;
-            let touchEndY = e.changedTouches[0].clientY;
-            
-            let diffX = touchStartX - touchEndX;
-            let diffY = touchStartY - touchEndY;
-            
-            // Проверяем что это горизонтальный свайп (а не вертикальный)
-            if (Math.abs(diffX) > Math.abs(diffY)) {
-                // Свайп влево для возврата к основному списку
-                if (diffX > 50 && currentRecipe !== 'main') {
-                    switchToRecipe('main');
-                }
+        const categories = {
+            'bread': {
+                name: 'Хлеб и выпечка',
+                icon: '🥖',
+                class: 'category-bread',
+                keywords: ['хлеб', 'булочка', 'батон', 'багет', 'лаваш', 'пита', 'круассан', 'кекс', 'пирог', 'торт', 'печенье', 'сушки', 'баранки']
+            },
+            'dairy': {
+                name: 'Молочные продукты',
+                icon: '🥛',
+                class: 'category-dairy',
+                keywords: ['молоко', 'кефир', 'ряженка', 'творог', 'сметана', 'йогурт', 'сыр', 'масло', 'сливки', 'простокваша']
+            },
+            'meat': {
+                name: 'Мясо и рыба',
+                icon: '🥩',
+                class: 'category-meat',
+                keywords: ['мясо', 'говядина', 'свинина', 'курица', 'индейка', 'рыба', 'колбаса', 'сосиски', 'фарш', 'котлеты', 'окорок', 'бекон']
+            },
+            'vegetables': {
+                name: 'Овощи и фрукты',
+                icon: '🥕',
+                class: 'category-vegetables',
+                keywords: ['помидор', 'огурец', 'морковь', 'лук', 'картофель', 'капуста', 'яблоко', 'банан', 'апельсин', 'груша', 'виноград', 'клубника', 'авокадо', 'перец', 'чеснок']
+            },
+            'sweets': {
+                name: 'Сладости',
+                icon: '🍰',
+                class: 'category-sweets',
+                keywords: ['шоколад', 'конфеты', 'мармелад', 'зефир', 'пастила', 'халва', 'карамель', 'леденцы', 'жвачка', 'мороженое']
+            },
+            'grocery': {
+                name: 'Бакалея',
+                icon: '📦',
+                class: 'category-grocery',
+                keywords: ['крупа', 'рис', 'гречка', 'макароны', 'мука', 'сахар', 'соль', 'масло', 'уксус', 'специи', 'консервы', 'чай', 'кофе', 'сок']
             }
+        };
+
+        // Обработка свайпов - ТОЛЬКО после загрузки DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentArea = document.getElementById('contentArea');
             
-            touchStartX = 0;
-            touchStartY = 0;
+            if (contentArea) {
+                contentArea.addEventListener('touchstart', function(e) {
+                    // Только если мы НЕ в основном списке
+                    if (currentRecipe === 'main') return;
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                });
+
+                contentArea.addEventListener('touchend', function(e) {
+                    // Только если мы НЕ в основном списке
+                    if (currentRecipe === 'main' || !touchStartX || !touchStartY) return;
+
+                    let touchEndX = e.changedTouches[0].clientX;
+                    let touchEndY = e.changedTouches[0].clientY;
+                    
+                    let diffX = touchStartX - touchEndX;
+                    let diffY = touchStartY - touchEndY;
+                    
+                    // Проверяем что это горизонтальный свайп влево (а не вертикальный)
+                    if (Math.abs(diffX) > Math.abs(diffY) && diffX > 80) {
+                        e.preventDefault();
+                        switchToRecipe('main');
+                    }
+                    
+                    touchStartX = 0;
+                    touchStartY = 0;
+                });
+            }
         });
 
         function startLongPress(event) {
-            event.preventDefault();
-            isLongPress = false;
-            longPressTimer = setTimeout(() => {
-                isLongPress = true;
-                createNewRecipe();
-            }, 600);
+            // Убираем лонг тап - больше не нужен
         }
 
         function endLongPress(event) {
-            if (longPressTimer) {
-                clearTimeout(longPressTimer);
-                longPressTimer = null;
-            }
-            
-            // Если это не был лонг тап, добавляем продукт
-            if (!isLongPress) {
-                setTimeout(addProduct, 100);
-            }
-            
-            // Сбрасываем флаг
-            setTimeout(() => {
-                isLongPress = false;
-            }, 200);
+            // Убираем лонг тап - больше не нужен
         }
 
         function saveCurrentRecipeData() {
@@ -431,11 +483,9 @@
             
             recipeData[recipeId] = { name: name, products: [] };
             
-            // Показать stories-секцию при создании первого рецепта
+            // ВСЕГДА показать stories-секцию при создании рецепта
             const storiesSection = document.querySelector('.recipes-stories');
-            if (storiesSection.style.display === 'none') {
-                storiesSection.style.display = 'block';
-            }
+            storiesSection.style.display = 'block';
             
             const newStory = document.createElement('div');
             newStory.className = 'story-item';
@@ -482,45 +532,6 @@
             itemsContainer.appendChild(item);
             updateCategoryCount(categorySection);
         }
-
-        const categories = {
-            'bread': {
-                name: 'Хлеб и выпечка',
-                icon: '🥖',
-                class: 'category-bread',
-                keywords: ['хлеб', 'булочка', 'батон', 'багет', 'лаваш', 'пита', 'круассан', 'кекс', 'пирог', 'торт', 'печенье', 'сушки', 'баранки']
-            },
-            'dairy': {
-                name: 'Молочные продукты',
-                icon: '🥛',
-                class: 'category-dairy',
-                keywords: ['молоко', 'кефир', 'ряженка', 'творог', 'сметана', 'йогурт', 'сыр', 'масло', 'сливки', 'простокваша']
-            },
-            'meat': {
-                name: 'Мясо и рыба',
-                icon: '🥩',
-                class: 'category-meat',
-                keywords: ['мясо', 'говядина', 'свинина', 'курица', 'индейка', 'рыба', 'колбаса', 'сосиски', 'фарш', 'котлеты', 'окорок', 'бекон']
-            },
-            'vegetables': {
-                name: 'Овощи и фрукты',
-                icon: '🥕',
-                class: 'category-vegetables',
-                keywords: ['помидор', 'огурец', 'морковь', 'лук', 'картофель', 'капуста', 'яблоко', 'банан', 'апельсин', 'груша', 'виноград', 'клубника', 'авокадо', 'перец', 'чеснок']
-            },
-            'sweets': {
-                name: 'Сладости',
-                icon: '🍰',
-                class: 'category-sweets',
-                keywords: ['шоколад', 'конфеты', 'мармелад', 'зефир', 'пастила', 'халва', 'карамель', 'леденцы', 'жвачка', 'мороженое']
-            },
-            'grocery': {
-                name: 'Бакалея',
-                icon: '📦',
-                class: 'category-grocery',
-                keywords: ['крупа', 'рис', 'гречка', 'макароны', 'мука', 'сахар', 'соль', 'масло', 'уксус', 'специи', 'консервы', 'чай', 'кофе', 'сок']
-            }
-        };
 
         function parseProduct(input) {
             const text = input.trim();
