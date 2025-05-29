@@ -388,18 +388,12 @@
                     newStory.className = 'story-item';
                     newStory.setAttribute('data-recipe', recipeId);
                     
-                    // Важно: создаем обработчики событий заново
-                    newStory.addEventListener('click', function() { 
-                        switchToRecipe(recipeId); 
-                    });
-                    newStory.addEventListener('mousedown', function(e) { 
-                        startStoryLongPress(e, this); 
-                    });
-                    newStory.addEventListener('mouseup', endStoryLongPress);
-                    newStory.addEventListener('touchstart', function(e) { 
-                        startStoryLongPress(e, this); 
-                    });
-                    newStory.addEventListener('touchend', endStoryLongPress);
+                    // Используем встроенные обработчики для надежности
+                    newStory.setAttribute('onclick', 'switchToRecipe("' + recipeId + '")');
+                    newStory.setAttribute('onmousedown', 'startStoryLongPress(event, this)');
+                    newStory.setAttribute('onmouseup', 'endStoryLongPress(event)');
+                    newStory.setAttribute('ontouchstart', 'startStoryLongPress(event, this)');
+                    newStory.setAttribute('ontouchend', 'endStoryLongPress(event)');
                     
                     newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + recipe.name + '</div>';
                     
@@ -454,6 +448,8 @@
         }
 
         function switchToRecipe(recipeId) {
+            console.log('Переключение на рецепт:', recipeId); // Для отладки
+            
             if (document.querySelectorAll('.item').length > 0) {
                 saveCurrentRecipeData();
             }
@@ -478,18 +474,12 @@
             newStory.className = 'story-item';
             newStory.setAttribute('data-recipe', recipeId);
             
-            // Используем addEventListener вместо onclick для лучшей совместимости
-            newStory.addEventListener('click', function() { 
-                switchToRecipe(recipeId); 
-            });
-            newStory.addEventListener('mousedown', function(e) { 
-                startStoryLongPress(e, this); 
-            });
-            newStory.addEventListener('mouseup', endStoryLongPress);
-            newStory.addEventListener('touchstart', function(e) { 
-                startStoryLongPress(e, this); 
-            });
-            newStory.addEventListener('touchend', endStoryLongPress);
+            // Простое решение - используем встроенные обработчики
+            newStory.setAttribute('onclick', 'switchToRecipe("' + recipeId + '")');
+            newStory.setAttribute('onmousedown', 'startStoryLongPress(event, this)');
+            newStory.setAttribute('onmouseup', 'endStoryLongPress(event)');
+            newStory.setAttribute('ontouchstart', 'startStoryLongPress(event, this)');
+            newStory.setAttribute('ontouchend', 'endStoryLongPress(event)');
             
             newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + name + '</div>';
             
