@@ -485,11 +485,32 @@ function restoreStories() {
             const newStory = document.createElement('div');
             newStory.className = 'story-item';
             newStory.setAttribute('data-recipe', recipeId);
+
+            // Открытие рецепта — только click!
             newStory.addEventListener('click', () => switchToRecipe(recipeId));
-            newStory.addEventListener('mousedown', (event) => startStoryLongPress(event, newStory));
-            newStory.addEventListener('mouseup', endStoryLongPress);
-            newStory.addEventListener('touchstart', (event) => startStoryLongPress(event, newStory));
-            newStory.addEventListener('touchend', endStoryLongPress);
+
+            // Лонгтап на мобильных
+            newStory.addEventListener('touchstart', function () {
+                longPressTimer = setTimeout(() => handleStoryLongPress(newStory), 600);
+            });
+            newStory.addEventListener('touchend', function () {
+                if (longPressTimer) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+            });
+
+            // Лонгтап на десктопе (мышь)
+            newStory.addEventListener('mousedown', function () {
+                longPressTimer = setTimeout(() => handleStoryLongPress(newStory), 600);
+            });
+            newStory.addEventListener('mouseup', function () {
+                if (longPressTimer) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+            });
+
             newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + recipe.name + '</div>';
             storiesContainer.insertBefore(newStory, addButton);
         }
@@ -740,6 +761,13 @@ function initNewRecipeModal() {
     modal.addEventListener('click', (e) => {
         if (e.target === modal) hideNewRecipeModal();
     });
+}
+
+function handleStoryLongPress(element) {
+    const recipeId = element.getAttribute('data-recipe');
+    if (recipeId !== 'main') {
+        deleteRecipe(recipeId);
+    }
 }
 
 function addProduct() {
