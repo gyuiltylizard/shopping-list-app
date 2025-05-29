@@ -25,11 +25,6 @@
             max-width: 600px;
             margin: 0 auto;
             padding-top: 24px;
-            transition: background-color 0.3s;
-        }
-
-        .content.recipe-mode {
-            background: linear-gradient(135deg, #fff8e1, #fff3c4);
         }
 
         .recipes-stories {
@@ -376,29 +371,42 @@
 
         function restoreStories() {
             const storiesContainer = document.getElementById('storiesContainer');
+            
+            // Сохраняем ссылки на существующие элементы
             const mainStory = storiesContainer.querySelector('[data-recipe="main"]');
             const addButton = storiesContainer.querySelector('.add-new');
-            storiesContainer.innerHTML = '';
-            storiesContainer.appendChild(mainStory);
             
+            // Очищаем только дополнительные рецепты
+            const existingRecipes = storiesContainer.querySelectorAll('[data-recipe]:not([data-recipe="main"])');
+            existingRecipes.forEach(recipe => recipe.remove());
+            
+            // Добавляем восстановленные рецепты
             Object.keys(recipeData).forEach(recipeId => {
                 if (recipeId !== 'main') {
                     const recipe = recipeData[recipeId];
                     const newStory = document.createElement('div');
                     newStory.className = 'story-item';
                     newStory.setAttribute('data-recipe', recipeId);
-                    newStory.onclick = function() { switchToRecipe(recipeId); };
-                    newStory.onmousedown = function(e) { startStoryLongPress(e, this); };
-                    newStory.onmouseup = endStoryLongPress;
-                    newStory.ontouchstart = function(e) { startStoryLongPress(e, this); };
-                    newStory.ontouchend = endStoryLongPress;
+                    
+                    // Важно: создаем обработчики событий заново
+                    newStory.addEventListener('click', function() { 
+                        switchToRecipe(recipeId); 
+                    });
+                    newStory.addEventListener('mousedown', function(e) { 
+                        startStoryLongPress(e, this); 
+                    });
+                    newStory.addEventListener('mouseup', endStoryLongPress);
+                    newStory.addEventListener('touchstart', function(e) { 
+                        startStoryLongPress(e, this); 
+                    });
+                    newStory.addEventListener('touchend', endStoryLongPress);
                     
                     newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + recipe.name + '</div>';
-                    storiesContainer.appendChild(newStory);
+                    
+                    // Вставляем перед кнопкой добавления
+                    storiesContainer.insertBefore(newStory, addButton);
                 }
             });
-            
-            storiesContainer.appendChild(addButton);
         }
 
         function startStoryLongPress(event, element) {
@@ -455,14 +463,6 @@
             updateActiveStory(recipeId);
             loadRecipeData(recipeId);
             
-            // Меняем фон для рецептов
-            const contentArea = document.getElementById('contentArea');
-            if (recipeId === 'main') {
-                contentArea.classList.remove('recipe-mode');
-            } else {
-                contentArea.classList.add('recipe-mode');
-            }
-            
             saveData();
         }
 
@@ -477,11 +477,19 @@
             const newStory = document.createElement('div');
             newStory.className = 'story-item';
             newStory.setAttribute('data-recipe', recipeId);
-            newStory.onclick = function() { switchToRecipe(recipeId); };
-            newStory.onmousedown = function(e) { startStoryLongPress(e, this); };
-            newStory.onmouseup = endStoryLongPress;
-            newStory.ontouchstart = function(e) { startStoryLongPress(e, this); };
-            newStory.ontouchend = endStoryLongPress;
+            
+            // Используем addEventListener вместо onclick для лучшей совместимости
+            newStory.addEventListener('click', function() { 
+                switchToRecipe(recipeId); 
+            });
+            newStory.addEventListener('mousedown', function(e) { 
+                startStoryLongPress(e, this); 
+            });
+            newStory.addEventListener('mouseup', endStoryLongPress);
+            newStory.addEventListener('touchstart', function(e) { 
+                startStoryLongPress(e, this); 
+            });
+            newStory.addEventListener('touchend', endStoryLongPress);
             
             newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + name + '</div>';
             
