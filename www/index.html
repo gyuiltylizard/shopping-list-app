@@ -25,6 +25,11 @@
             max-width: 600px;
             margin: 0 auto;
             padding-top: 24px;
+            transition: background-color 0.3s;
+        }
+
+        .content.recipe-mode {
+            background: linear-gradient(135deg, #fff8e1, #fff3c4);
         }
 
         .recipes-stories {
@@ -103,26 +108,7 @@
         }
 
         .back-button {
-            background: #f8f9fa;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
-            margin-bottom: 16px;
-            font-size: 14px;
-            color: #6200ea;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            transition: background-color 0.3s;
-        }
-        
-        .back-button:hover {
-            background: #e9ecef;
-        }
-        
-        .back-button.show {
-            display: flex;
+            display: none; /* Убираем кнопку назад */
         }
 
         .input-section {
@@ -282,7 +268,7 @@
     <div class="content" id="contentArea">
         <div class="recipes-stories">
             <div class="stories-container" id="storiesContainer">
-                <div class="story-item active" data-recipe="main" onclick="switchToRecipe('main')" onmousedown="startStoryLongPress(event, this)" onmouseup="endStoryLongPress(event)" ontouchstart="startStoryLongPress(event, this)" ontouchend="endStoryLongPress(event)">
+                <div class="story-item active" data-recipe="main" onclick="switchToRecipe('main')">
                     <div class="story-circle">🛒</div>
                     <div class="story-name">Основной</div>
                 </div>
@@ -293,7 +279,7 @@
             </div>
         </div>
 
-        <button class="back-button" id="backButton" onclick="switchToRecipe('main')">
+        <button class="back-button" id="backButton" onclick="switchToRecipe('main')" style="display: none;">
             ← Назад
         </button>
 
@@ -469,11 +455,12 @@
             updateActiveStory(recipeId);
             loadRecipeData(recipeId);
             
-            const backButton = document.getElementById('backButton');
+            // Меняем фон для рецептов
+            const contentArea = document.getElementById('contentArea');
             if (recipeId === 'main') {
-                backButton.classList.remove('show');
+                contentArea.classList.remove('recipe-mode');
             } else {
-                backButton.classList.add('show');
+                contentArea.classList.add('recipe-mode');
             }
             
             saveData();
