@@ -19,22 +19,6 @@
             min-height: 100vh;
         }
 
-        .status-bar {
-            height: 24px;
-            background: #6200ea;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .app-bar {
-            display: none;
-        }
-
         .content {
             padding: 16px;
             padding-bottom: 80px;
@@ -45,7 +29,7 @@
 
         .recipes-stories {
             margin-bottom: 16px;
-            display: none; /* Скрыто по умолчанию */
+            display: block;
         }
 
         .stories-container {
@@ -116,6 +100,29 @@
         .story-item.active .story-name {
             color: #6200ea;
             font-weight: 600;
+        }
+
+        .back-button {
+            background: #f8f9fa;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #6200ea;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-button:hover {
+            background: #e9ecef;
+        }
+        
+        .back-button.show {
+            display: flex;
         }
 
         .input-section {
@@ -263,55 +270,19 @@
             color: #f44336;
         }
 
-        .back-button {
-            background: #f8f9fa;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
-            margin-bottom: 16px;
-            font-size: 14px;
-            color: #6200ea;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            transition: background-color 0.3s;
-        }
-        
-        .back-button:hover {
-            background: #e9ecef;
-        }
-        
-        .fab-add-recipe {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #ff4081, #f50057);
-            border: none;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(255,64,129,0.4);
-            transition: all 0.2s;
-            font-size: 24px;
-            z-index: 1000;
-        }
-
-        .fab-add-recipe:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(255,64,129,0.5);
-        }
+        .category-bread { background: linear-gradient(135deg, #ff9800, #ff6f00); }
+        .category-dairy { background: linear-gradient(135deg, #2196f3, #1976d2); }
+        .category-meat { background: linear-gradient(135deg, #f44336, #d32f2f); }
+        .category-vegetables { background: linear-gradient(135deg, #4caf50, #388e3c); }
+        .category-sweets { background: linear-gradient(135deg, #e91e63, #c2185b); }
+        .category-grocery { background: linear-gradient(135deg, #9c27b0, #7b1fa2); }
     </style>
 </head>
 <body>
-    <div class="content">
+    <div class="content" id="contentArea">
         <div class="recipes-stories">
             <div class="stories-container" id="storiesContainer">
-                <div class="story-item active" data-recipe="main" onclick="switchToRecipe('main')">
+                <div class="story-item active" data-recipe="main" onclick="switchToRecipe('main')" onmousedown="startStoryLongPress(event, this)" onmouseup="endStoryLongPress(event)" ontouchstart="startStoryLongPress(event, this)" ontouchend="endStoryLongPress(event)">
                     <div class="story-circle">🛒</div>
                     <div class="story-name">Основной</div>
                 </div>
@@ -321,6 +292,10 @@
                 </div>
             </div>
         </div>
+
+        <button class="back-button" id="backButton" onclick="switchToRecipe('main')">
+            ← Назад
+        </button>
 
         <div class="input-section">
             <div class="input-container">
@@ -334,10 +309,6 @@
         </div>
     </div>
 
-    <button class="fab-add-recipe" onclick="createNewRecipe()" title="Добавить новый список">
-        📝
-    </button>
-
     <script>
         let currentRecipe = 'main';
         
@@ -349,6 +320,7 @@
         let isLongPress = false;
         let touchStartX = 0;
         let touchStartY = 0;
+        let longPressTarget = null;
 
         const categories = {
             'bread': {
@@ -389,46 +361,77 @@
             }
         };
 
-        // Обработка свайпов - ТОЛЬКО после загрузки DOM
-        document.addEventListener('DOMContentLoaded', function() {
-            const contentArea = document.getElementById('contentArea');
-            
-            if (contentArea) {
-                contentArea.addEventListener('touchstart', function(e) {
-                    // Только если мы НЕ в основном списке
-                    if (currentRecipe === 'main') return;
-                    touchStartX = e.touches[0].clientX;
-                    touchStartY = e.touches[0].clientY;
-                });
-
-                contentArea.addEventListener('touchend', function(e) {
-                    // Только если мы НЕ в основном списке
-                    if (currentRecipe === 'main' || !touchStartX || !touchStartY) return;
-
-                    let touchEndX = e.changedTouches[0].clientX;
-                    let touchEndY = e.changedTouches[0].clientY;
-                    
-                    let diffX = touchStartX - touchEndX;
-                    let diffY = touchStartY - touchEndY;
-                    
-                    // Проверяем что это горизонтальный свайп влево (а не вертикальный)
-                    if (Math.abs(diffX) > Math.abs(diffY) && diffX > 80) {
-                        e.preventDefault();
-                        switchToRecipe('main');
-                    }
-                    
-                    touchStartX = 0;
-                    touchStartY = 0;
-                });
-            }
-        });
-
-        function startLongPress(event) {
-            // Убираем лонг тап - больше не нужен
+        // Функции сохранения и загрузки данных
+        function saveData() {
+            const dataToSave = {
+                recipeData: recipeData,
+                currentRecipe: currentRecipe
+            };
+            localStorage.setItem('shoppingListApp', JSON.stringify(dataToSave));
         }
 
-        function endLongPress(event) {
-            // Убираем лонг тап - больше не нужен
+        function loadData() {
+            try {
+                const savedData = localStorage.getItem('shoppingListApp');
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    recipeData = data.recipeData || { main: { name: 'Список покупок', products: [] } };
+                    currentRecipe = data.currentRecipe || 'main';
+                    
+                    restoreStories();
+                    switchToRecipe(currentRecipe);
+                }
+            } catch (error) {
+                console.log('Ошибка загрузки данных:', error);
+                recipeData = { main: { name: 'Список покупок', products: [] } };
+                currentRecipe = 'main';
+            }
+        }
+
+        function restoreStories() {
+            const storiesContainer = document.getElementById('storiesContainer');
+            const mainStory = storiesContainer.querySelector('[data-recipe="main"]');
+            const addButton = storiesContainer.querySelector('.add-new');
+            storiesContainer.innerHTML = '';
+            storiesContainer.appendChild(mainStory);
+            
+            Object.keys(recipeData).forEach(recipeId => {
+                if (recipeId !== 'main') {
+                    const recipe = recipeData[recipeId];
+                    const newStory = document.createElement('div');
+                    newStory.className = 'story-item';
+                    newStory.setAttribute('data-recipe', recipeId);
+                    newStory.onclick = function() { switchToRecipe(recipeId); };
+                    newStory.onmousedown = function(e) { startStoryLongPress(e, this); };
+                    newStory.onmouseup = endStoryLongPress;
+                    newStory.ontouchstart = function(e) { startStoryLongPress(e, this); };
+                    newStory.ontouchend = endStoryLongPress;
+                    
+                    newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + recipe.name + '</div>';
+                    storiesContainer.appendChild(newStory);
+                }
+            });
+            
+            storiesContainer.appendChild(addButton);
+        }
+
+        function startStoryLongPress(event, element) {
+            event.preventDefault();
+            longPressTarget = element;
+            longPressTimer = setTimeout(() => {
+                const recipeId = element.getAttribute('data-recipe');
+                if (recipeId !== 'main') {
+                    deleteRecipe(recipeId);
+                }
+            }, 600);
+        }
+
+        function endStoryLongPress(event) {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+            longPressTarget = null;
         }
 
         function saveCurrentRecipeData() {
@@ -466,13 +469,14 @@
             updateActiveStory(recipeId);
             loadRecipeData(recipeId);
             
-            // Показать/скрыть кнопку "Назад"
             const backButton = document.getElementById('backButton');
             if (recipeId === 'main') {
                 backButton.classList.remove('show');
             } else {
                 backButton.classList.add('show');
             }
+            
+            saveData();
         }
 
         function createNewRecipe() {
@@ -483,14 +487,14 @@
             
             recipeData[recipeId] = { name: name, products: [] };
             
-            // ВСЕГДА показать stories-секцию при создании рецепта
-            const storiesSection = document.querySelector('.recipes-stories');
-            storiesSection.style.display = 'block';
-            
             const newStory = document.createElement('div');
             newStory.className = 'story-item';
             newStory.setAttribute('data-recipe', recipeId);
             newStory.onclick = function() { switchToRecipe(recipeId); };
+            newStory.onmousedown = function(e) { startStoryLongPress(e, this); };
+            newStory.onmouseup = endStoryLongPress;
+            newStory.ontouchstart = function(e) { startStoryLongPress(e, this); };
+            newStory.ontouchend = endStoryLongPress;
             
             newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + name + '</div>';
             
@@ -498,6 +502,21 @@
             addButton.parentNode.insertBefore(newStory, addButton);
             
             switchToRecipe(recipeId);
+            saveData();
+        }
+
+        function deleteRecipe(recipeId) {
+            if (confirm('Удалить список "' + recipeData[recipeId].name + '"?')) {
+                delete recipeData[recipeId];
+                
+                const storyElement = document.querySelector('[data-recipe="' + recipeId + '"]');
+                if (storyElement) {
+                    storyElement.remove();
+                }
+                
+                switchToRecipe('main');
+                saveData();
+            }
         }
 
         function loadRecipeData(recipeId) {
@@ -586,7 +605,6 @@
                 displayName += ' (' + parsed.quantity + ' шт)';
             }
             
-            // Проверить, есть ли уже такой продукт в основном списке
             let existingStatus = false;
             if (currentRecipe !== 'main') {
                 const mainProducts = recipeData.main.products;
@@ -600,9 +618,7 @@
             
             addProductToUI(displayName, categoryId, existingStatus);
             
-            // Если это не основной список, добавить в основной список
             if (currentRecipe !== 'main') {
-                // Проверить, нет ли уже такого продукта в основном списке
                 let alreadyExists = false;
                 const mainProducts = recipeData.main.products;
                 for (let i = 0; i < mainProducts.length; i++) {
@@ -622,6 +638,8 @@
             }
             
             input.value = '';
+            saveCurrentRecipeData();
+            saveData();
         }
 
         function createCategorySection(categoryId, category) {
@@ -657,10 +675,12 @@
                 item.classList.add('completed');
                 syncProductStatus(productText, true);
             }
+            
+            saveCurrentRecipeData();
+            saveData();
         }
 
         function syncProductStatus(productText, isCompleted) {
-            // Синхронизировать во всех рецептах
             for (let recipeId in recipeData) {
                 const products = recipeData[recipeId].products;
                 for (let i = 0; i < products.length; i++) {
@@ -670,7 +690,6 @@
                 }
             }
             
-            // Обновить визуально во всех видимых элементах на странице
             document.querySelectorAll('.item').forEach(itemElement => {
                 const itemText = itemElement.querySelector('.item-text').textContent;
                 if (itemText === productText) {
@@ -691,7 +710,6 @@
             const categorySection = deleteButton.closest('.category-section');
             const productText = item.querySelector('.item-text').textContent;
             
-            // Удалить из данных текущего рецепта
             const currentProducts = recipeData[currentRecipe].products;
             for (let i = currentProducts.length - 1; i >= 0; i--) {
                 if (currentProducts[i].text === productText) {
@@ -700,7 +718,6 @@
                 }
             }
             
-            // Проверить, есть ли этот продукт в других рецептах
             let existsInOtherRecipes = false;
             for (let recipeId in recipeData) {
                 if (recipeId !== currentRecipe) {
@@ -715,8 +732,6 @@
                 }
             }
             
-            // Если продукт не используется в других рецептах и мы не в основном списке,
-            // удалить его и из основного списка
             if (!existsInOtherRecipes && currentRecipe !== 'main') {
                 const mainProducts = recipeData.main.products;
                 for (let i = mainProducts.length - 1; i >= 0; i--) {
@@ -734,6 +749,8 @@
             if (itemsContainer.children.length === 0) {
                 categorySection.remove();
             }
+            
+            saveData();
         }
 
         function updateCategoryCount(categorySection) {
@@ -742,18 +759,56 @@
             countElement.textContent = items.length;
         }
 
-        document.getElementById('productInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addProduct();
-            }
-        });
+        function startLongPress(event) {
+            // Больше не используется
+        }
 
+        function endLongPress(event) {
+            // Больше не используется
+        }
+
+        // Инициализация
         document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            
             if (document.querySelectorAll('.item').length > 0) {
                 saveCurrentRecipeData();
             }
             
             document.querySelectorAll('.category-section').forEach(updateCategoryCount);
+            
+            const contentArea = document.getElementById('contentArea');
+            if (contentArea) {
+                contentArea.addEventListener('touchstart', function(e) {
+                    if (currentRecipe === 'main') return;
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                });
+
+                contentArea.addEventListener('touchend', function(e) {
+                    if (currentRecipe === 'main' || !touchStartX || !touchStartY) return;
+
+                    let touchEndX = e.changedTouches[0].clientX;
+                    let touchEndY = e.changedTouches[0].clientY;
+                    
+                    let diffX = touchStartX - touchEndX;
+                    let diffY = touchStartY - touchEndY;
+                    
+                    if (Math.abs(diffX) > Math.abs(diffY) && diffX > 80) {
+                        e.preventDefault();
+                        switchToRecipe('main');
+                    }
+                    
+                    touchStartX = 0;
+                    touchStartY = 0;
+                });
+            }
+        });
+
+        document.getElementById('productInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addProduct();
+            }
         });
     </script>
 </body>
