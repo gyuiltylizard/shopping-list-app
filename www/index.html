@@ -12,13 +12,11 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Roboto', sans-serif;
             background: #f5f5f5;
             min-height: 100vh;
         }
-
         .content {
             padding: 16px;
             padding-bottom: 80px;
@@ -26,12 +24,10 @@
             margin: 0 auto;
             padding-top: 24px;
         }
-
         .recipes-stories {
             margin-bottom: 16px;
             display: block;
         }
-
         .stories-container {
             display: flex;
             gap: 12px;
@@ -40,11 +36,9 @@
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
-
         .stories-container::-webkit-scrollbar {
             display: none;
         }
-
         .story-item {
             display: flex;
             flex-direction: column;
@@ -53,11 +47,9 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-
         .story-item:hover {
             transform: scale(1.05);
         }
-
         .story-circle {
             width: 56px;
             height: 56px;
@@ -72,20 +64,17 @@
             transition: all 0.3s;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .story-item.active .story-circle {
             border-color: #6200ea;
             background: linear-gradient(135deg, #6200ea, #7c4dff);
             color: white;
         }
-
         .story-item.add-new .story-circle {
             background: linear-gradient(135deg, #ff4081, #f50057);
             color: white;
             font-size: 28px;
             font-weight: 300;
         }
-
         .story-name {
             font-size: 12px;
             color: #666;
@@ -96,16 +85,13 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-
         .story-item.active .story-name {
             color: #6200ea;
             font-weight: 600;
         }
-
         .back-button {
             display: none;
         }
-
         .input-section {
             background: white;
             border-radius: 12px;
@@ -113,13 +99,11 @@
             margin-bottom: 16px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .input-container {
             display: flex;
             gap: 8px;
             align-items: center;
         }
-
         .input-field {
             flex: 1;
             border: none;
@@ -130,7 +114,6 @@
             border-radius: 8px;
             font-family: 'Roboto', sans-serif;
         }
-
         .add-button {
             background: #6200ea;
             border: none;
@@ -147,12 +130,10 @@
             font-family: 'Roboto', sans-serif;
             font-weight: 300;
         }
-
         .add-button:hover {
             background: #5a00d6;
             transform: scale(1.05);
         }
-
         .category-section {
             background: white;
             border-radius: 12px;
@@ -160,7 +141,6 @@
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .category-header {
             background: linear-gradient(135deg, #6200ea, #7c4dff);
             color: white;
@@ -169,7 +149,6 @@
             align-items: center;
             justify-content: space-between;
         }
-
         .category-title {
             font-size: 18px;
             font-weight: 500;
@@ -177,7 +156,6 @@
             align-items: center;
             gap: 8px;
         }
-
         .category-count {
             background: rgba(255,255,255,0.2);
             border-radius: 12px;
@@ -185,11 +163,9 @@
             font-size: 12px;
             font-weight: 500;
         }
-
         .category-items {
             padding: 8px 0;
         }
-
         .item {
             display: flex;
             align-items: center;
@@ -197,19 +173,15 @@
             transition: background 0.2s;
             cursor: pointer;
         }
-
         .item:hover {
             background: #f5f5f5;
         }
-
         .item.completed {
             opacity: 0.6;
         }
-
         .item.completed .item-text {
             text-decoration: line-through;
         }
-
         .checkbox {
             width: 20px;
             height: 20px;
@@ -222,35 +194,106 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
         .checkbox.checked {
             background: #6200ea;
         }
-
         .checkbox.checked::after {
             content: '✓';
             color: white;
             font-size: 12px;
             font-weight: bold;
         }
-
         .item-text {
             flex: 1;
             font-size: 16px;
             color: #333;
         }
-
         .delete-button {
             color: #999;
             cursor: pointer;
             transition: color 0.2s;
             font-size: 20px;
         }
-
         .delete-button:hover {
             color: #f44336;
         }
-
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.visible {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-container {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            padding: 24px;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+            transform: scale(0.7);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.visible .modal-container {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .modal-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        .modal-input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #6200ea;
+            font-size: 16px;
+            padding: 12px 0;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .modal-input:focus {
+            border-color: #3700b3;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 24px;
+            gap: 16px;
+        }
+        .modal-btn {
+            background: none;
+            border: none;
+            color: #6200ea;
+            font-weight: 500;
+            text-transform: uppercase;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .modal-btn:hover {
+            background: rgba(98, 0, 234, 0.1);
+        }
+        .modal-btn-primary {
+            color: #6200ea;
+        }
+        .modal-btn-cancel {
+            color: #666;
+        }
         .category-bread { background: linear-gradient(135deg, #ff9800, #ff6f00); }
         .category-dairy { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .category-meat { background: linear-gradient(135deg, #f44336, #d32f2f); }
@@ -273,538 +316,521 @@
                 </div>
             </div>
         </div>
-
         <button class="back-button" id="backButton" style="display: none;">← Назад</button>
-
         <div class="input-section">
             <div class="input-container">
                 <input type="text" class="input-field" placeholder="Добавить продукт..." id="productInput">
                 <button class="add-button" id="addProductButton">+</button>
             </div>
         </div>
-
-        <div id="categoriesContainer">
-            <!-- Пустой список - продукты добавляются пользователем -->
+        <div id="categoriesContainer"></div>
+    </div>
+    <div id="newRecipeModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-title">Создать новый список</div>
+            <input type="text" id="newRecipeNameInput" class="modal-input" placeholder="Название списка" maxlength="30">
+            <div class="modal-actions">
+                <button id="cancelNewRecipeBtn" class="modal-btn modal-btn-cancel">Отмена</button>
+                <button id="confirmNewRecipeBtn" class="modal-btn modal-btn-primary">Создать</button>
+            </div>
         </div>
     </div>
-
     <script>
-        let currentRecipe = 'main';
-        
-        let recipeData = {
-            main: { name: 'Список покупок', products: [] }
-        };
-
-        let longPressTimer;
-        let isLongPress = false;
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let longPressTarget = null;
-
-        const categories = {
-            'bread': {
-                name: 'Хлеб и выпечка',
-                icon: '🥖',
-                class: 'category-bread',
-                keywords: ['хлеб', 'булочка', 'батон', 'багет', 'лаваш', 'пита', 'круассан', 'кекс', 'пирог', 'торт', 'печенье', 'сушки', 'баранки']
-            },
-            'dairy': {
-                name: 'Молочные продукты',
-                icon: '🥛',
-                class: 'category-dairy',
-                keywords: ['молоко', 'кефир', 'ряженка', 'творог', 'сметана', 'йогурт', 'сыр', 'масло', 'сливки', 'простокваша']
-            },
-            'meat': {
-                name: 'Мясо и рыба',
-                icon: '🥩',
-                class: 'category-meat',
-                keywords: ['мясо', 'говядина', 'свинина', 'курица', 'индейка', 'рыба', 'колбаса', 'сосиски', 'фарш', 'котлеты', 'окорок', 'бекон']
-            },
-            'vegetables': {
-                name: 'Овощи и фрукты',
-                icon: '🥕',
-                class: 'category-vegetables',
-                keywords: ['помидор', 'огурец', 'морковь', 'лук', 'картофель', 'капуста', 'яблоко', 'банан', 'апельсин', 'груша', 'виноград', 'клубника', 'авокадо', 'перец', 'чеснок']
-            },
-            'sweets': {
-                name: 'Сладости',
-                icon: '🍰',
-                class: 'category-sweets',
-                keywords: ['шоколад', 'конфеты', 'мармелад', 'зефир', 'пастила', 'халва', 'карамель', 'леденцы', 'жвачка', 'мороженое']
-            },
-            'grocery': {
-                name: 'Бакалея',
-                icon: '📦',
-                class: 'category-grocery',
-                keywords: ['крупа', 'рис', 'гречка', 'макароны', 'мука', 'сахар', 'соль', 'масло', 'уксус', 'специи', 'консервы', 'чай', 'кофе', 'сок']
-            }
-        };
-
-        function saveData() {
-            const dataToSave = {
-                recipeData: recipeData,
-                currentRecipe: currentRecipe
-            };
-            localStorage.setItem('shoppingListApp', JSON.stringify(dataToSave));
+// Все функции определены ВЫШЕ блока инициализации!
+let productCategories = {};
+let currentRecipe = 'main';
+let recipeData = {
+    main: { name: 'Список покупок', products: [] }
+};
+let longPressTimer;
+let touchStartX = 0;
+let touchStartY = 0;
+const categories = {
+    'bread': {
+        name: 'Хлеб и выпечка',
+        icon: '🥖',
+        class: 'category-bread',
+        keywords: ['хлеб', 'булочка', 'батон', 'багет', 'лаваш', 'пита']
+    },
+    'dairy': {
+        name: 'Молочные продукты',
+        icon: '🥛',
+        class: 'category-dairy',
+        keywords: ['молоко', 'кефир', 'ряженка', 'творог']
+    },
+    'meat': {
+        name: 'Мясо и рыба',
+        icon: '🥩',
+        class: 'category-meat',
+        keywords: ['мясо', 'говядина', 'свинина', 'курица', 'рыба']
+    },
+    'vegetables': {
+        name: 'Овощи и фрукты',
+        icon: '🥕',
+        class: 'category-vegetables',
+        keywords: ['помидор', 'огурец', 'морковь', 'лук', 'картофель']
+    },
+    'sweets': {
+        name: 'Сладости',
+        icon: '🍰',
+        class: 'category-sweets',
+        keywords: ['шоколад', 'конфеты', 'мармелад', 'зефир']
+    },
+    'grocery': {
+        name: 'Бакалея',
+        icon: '📦',
+        class: 'category-grocery',
+        keywords: ['крупа', 'рис', 'макароны', 'мука', 'сахар']
+    }
+};
+async function loadProductDatabase() {
+    try {
+        const response = await fetch('data/products.json');
+        const database = await response.json();
+        productCategories = database.categories;
+        return productCategories;
+    } catch (error) {
+        productCategories = {}; // fallback
+        return categories;
+    }
+}
+function categorizeProduct(productName, categoryData) {
+    const name = productName.toLowerCase();
+    for (let categoryId in categoryData) {
+        const category = categoryData[categoryId];
+        if (category.products && category.products.some(p => name.includes(p))) {
+            return categoryId;
         }
-
-        function loadData() {
-            try {
-                const savedData = localStorage.getItem('shoppingListApp');
-                if (savedData) {
-                    const data = JSON.parse(savedData);
-                    recipeData = data.recipeData || { main: { name: 'Список покупок', products: [] } };
-                    currentRecipe = data.currentRecipe || 'main';
-                    
-                    restoreStories();
-                    switchToRecipe(currentRecipe);
-                }
-            } catch (error) {
-                console.log('Ошибка загрузки данных:', error);
-                recipeData = { main: { name: 'Список покупок', products: [] } };
-                currentRecipe = 'main';
+    }
+    for (let categoryId in categoryData) {
+        const category = categoryData[categoryId];
+        for (let keyword of category.keywords) {
+            if (name.includes(keyword)) {
+                return categoryId;
             }
         }
-
-        function startStoryLongPress(event, element) {
-            event.preventDefault();
-            longPressTarget = element;
-            longPressTimer = setTimeout(() => {
-                const recipeId = element.getAttribute('data-recipe');
-                if (recipeId !== 'main') {
-                    deleteRecipe(recipeId);
-                }
-            }, 600);
+    }
+    return 'grocery';
+}
+function parseProduct(input) {
+    const text = input.trim();
+    const patterns = [
+        /^(\d+)\s+(.+)$/,
+        /^(\d+)\s*шт\.?\s+(.+)$/i,
+        /^(\d+)\s*штук[иа]?\s+(.+)$/i,
+        /^(\d+)\s*кг\.?\s+(.+)$/i,
+        /^(\d+)\s*л\.?\s+(.+)$/i,
+        /^(\d+)\s*г\.?\s+(.+)$/i
+    ];
+    for (let pattern of patterns) {
+        const match = text.match(pattern);
+        if (match) {
+            const quantity = parseInt(match[1]);
+            const name = match[2].trim();
+            return { name, quantity };
         }
+    }
+    return { name: text, quantity: 1 };
+}
+function saveData() {
+    const dataToSave = {
+        recipeData: recipeData,
+        currentRecipe: currentRecipe,
+        productCategories: productCategories
+    };
+    localStorage.setItem('shoppingListApp', JSON.stringify(dataToSave));
+}
+function saveCurrentRecipeData() {
+    const products = [];
+    document.querySelectorAll('.item').forEach(item => {
+        const text = item.querySelector('.item-text').textContent;
+        const isCompleted = item.classList.contains('completed');
+        const categorySection = item.closest('.category-section');
+        const categoryId = categorySection.getAttribute('data-category');
+        products.push({
+            text: text,
+            completed: isCompleted,
+            category: categoryId
+        });
+    });
+    recipeData[currentRecipe].products = products;
+}
+function updateActiveStory(recipeId) {
+    document.querySelectorAll('.story-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    const activeItem = document.querySelector('[data-recipe="' + recipeId + '"]');
+    if (activeItem) activeItem.classList.add('active');
+}
 
-        function endStoryLongPress(event) {
-            if (longPressTimer) {
-                clearTimeout(longPressTimer);
-                longPressTimer = null;
-            }
-            longPressTarget = null;
-        }
+function switchToRecipe(recipeId) {
+    if (document.querySelectorAll('.item').length > 0) {
+        saveCurrentRecipeData();
+    }
+    currentRecipe = recipeId;
+    updateActiveStory(recipeId);
+    loadRecipeData(recipeId);
+    saveData();
+}
 
-        function restoreStories() {
-            const storiesContainer = document.getElementById('storiesContainer');
-            const addButton = document.getElementById('addNewRecipeButton');
-            
-            // Удаляем существующие дополнительные списки
-            const existingRecipes = storiesContainer.querySelectorAll('[data-recipe]:not([data-recipe="main"])');
-            existingRecipes.forEach(recipe => recipe.remove());
-            
-            // Добавляем восстановленные рецепты
-            Object.keys(recipeData).forEach(recipeId => {
-                if (recipeId !== 'main') {
-                    const recipe = recipeData[recipeId];
-                    const newStory = document.createElement('div');
-                    newStory.className = 'story-item';
-                    newStory.setAttribute('data-recipe', recipeId);
-                    
-                    // Используем addEventListener вместо inline-атрибутов
-                    newStory.addEventListener('click', () => switchToRecipe(recipeId));
-                    
-                    // Обработчики долгого нажатия
-                    newStory.addEventListener('mousedown', (event) => startStoryLongPress(event, newStory));
-                    newStory.addEventListener('mouseup', endStoryLongPress);
-                    newStory.addEventListener('touchstart', (event) => startStoryLongPress(event, newStory));
-                    newStory.addEventListener('touchend', endStoryLongPress);
-                    
-                    newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + recipe.name + '</div>';
-                    
-                    // Вставляем перед кнопкой добавления
-                    storiesContainer.insertBefore(newStory, addButton);
-                }
-            });
-        }
-
-        function saveCurrentRecipeData() {
-            const products = [];
-            document.querySelectorAll('.item').forEach(item => {
-                const text = item.querySelector('.item-text').textContent;
-                const isCompleted = item.classList.contains('completed');
-                const categorySection = item.closest('.category-section');
-                const categoryId = categorySection.getAttribute('data-category');
-                
-                products.push({
-                    text: text,
-                    completed: isCompleted,
-                    category: categoryId
-                });
-            });
-            
-            recipeData[currentRecipe].products = products;
-        }
-
-        function updateActiveStory(recipeId) {
-            document.querySelectorAll('.story-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            document.querySelector('[data-recipe="' + recipeId + '"]').classList.add('active');
-        }
-
-        function switchToRecipe(recipeId) {
-            console.log('Переключение на рецепт:', recipeId);
-            
-            if (document.querySelectorAll('.item').length > 0) {
-                saveCurrentRecipeData();
-            }
-            
-            currentRecipe = recipeId;
-            
-            updateActiveStory(recipeId);
-            loadRecipeData(recipeId);
-            
-            saveData();
-        }
-
-        function createNewRecipe() {
-            const name = prompt('Название нового рецепта:');
-            if (!name) return;
-            
-            const recipeId = 'recipe_' + Date.now();
-            
-            recipeData[recipeId] = { name: name, products: [] };
-            
-            const storiesContainer = document.getElementById('storiesContainer');
-            const addButton = document.getElementById('addNewRecipeButton');
-            
+function restoreStories() {
+    const storiesContainer = document.getElementById('storiesContainer');
+    const addButton = document.getElementById('addNewRecipeButton');
+    // Удаляем все story-item кроме основного и кнопки "Новый"
+    const extra = storiesContainer.querySelectorAll('[data-recipe]:not([data-recipe="main"])');
+    extra.forEach(node => node.remove());
+    Object.keys(recipeData).forEach(recipeId => {
+        if (recipeId !== 'main') {
+            const recipe = recipeData[recipeId];
             const newStory = document.createElement('div');
             newStory.className = 'story-item';
             newStory.setAttribute('data-recipe', recipeId);
-            
-            // Используем addEventListener вместо inline-атрибутов
             newStory.addEventListener('click', () => switchToRecipe(recipeId));
-            
-            // Обработчики долгого нажатия
             newStory.addEventListener('mousedown', (event) => startStoryLongPress(event, newStory));
             newStory.addEventListener('mouseup', endStoryLongPress);
             newStory.addEventListener('touchstart', (event) => startStoryLongPress(event, newStory));
             newStory.addEventListener('touchend', endStoryLongPress);
-            
-            newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + name + '</div>';
-            
-            // Вставляем перед кнопкой добавления
+            newStory.innerHTML = '<div class="story-circle">🍽️</div><div class="story-name">' + recipe.name + '</div>';
             storiesContainer.insertBefore(newStory, addButton);
-            
-            switchToRecipe(recipeId);
-            saveData();
         }
+    });
+}
 
-        function deleteRecipe(recipeId) {
-            if (confirm('Удалить список "' + recipeData[recipeId].name + '"?')) {
-                delete recipeData[recipeId];
-                
-                const storyElement = document.querySelector('[data-recipe="' + recipeId + '"]');
-                if (storyElement) {
-                    storyElement.remove();
-                }
-                
-                switchToRecipe('main');
-                saveData();
+function loadRecipeData(recipeId) {
+    document.getElementById('categoriesContainer').innerHTML = '';
+    const products = recipeData[recipeId].products;
+    products.forEach(product => {
+        addProductToUI(product.text, product.category, product.completed);
+    });
+}
+
+function addProductToUI(productText, categoryId, isCompleted) {
+    isCompleted = isCompleted || false;
+    const category = productCategories[categoryId] || categories[categoryId];
+    let categorySection = document.querySelector('[data-category="' + categoryId + '"]');
+    if (!categorySection) {
+        categorySection = createCategorySection(categoryId, category);
+        document.getElementById('categoriesContainer').appendChild(categorySection);
+    }
+    const itemsContainer = categorySection.querySelector('.category-items');
+    const item = createProductItem(productText);
+    if (isCompleted) {
+        item.classList.add('completed');
+        item.querySelector('.checkbox').classList.add('checked');
+    }
+    itemsContainer.appendChild(item);
+    updateCategoryCount(categorySection);
+}
+
+function createCategorySection(categoryId, category) {
+    const section = document.createElement('div');
+    section.className = 'category-section';
+    section.setAttribute('data-category', categoryId);
+    section.innerHTML = '<div class="category-header ' + (category.class || 'category-grocery') + '"><div class="category-title"><span style="font-size: 20px; margin-right: 8px;">' + (category.icon || '📦') + '</span>' + category.name + '</div><div class="category-count">0</div></div><div class="category-items"></div>';
+    return section;
+}
+
+function createProductItem(productName) {
+    const item = document.createElement('div');
+    item.className = 'item';
+    item.innerHTML = '<div class="checkbox"></div><div class="item-text">' + productName + '</div><span class="delete-button">×</span>';
+    item.querySelector('.checkbox').addEventListener('click', function() { toggleItem(this); });
+    item.querySelector('.delete-button').addEventListener('click', function() { deleteItem(this); });
+    return item;
+}
+
+function toggleItem(checkbox) {
+    const item = checkbox.closest('.item');
+    const productText = item.querySelector('.item-text').textContent.trim();
+
+    // Новый статус
+    const isChecked = !checkbox.classList.contains('checked');
+
+    // Обновляем статус во всех списках
+    for (let recipeId in recipeData) {
+        for (let prod of recipeData[recipeId].products) {
+            if (prod.text.trim().toLowerCase().replace(/\s+/g, ' ') === productText.toLowerCase().replace(/\s+/g, ' ')) {
+                prod.completed = isChecked;
             }
         }
+    }
 
-        function loadRecipeData(recipeId) {
-            document.getElementById('categoriesContainer').innerHTML = '';
-            
-            const products = recipeData[recipeId].products;
-            
-            products.forEach(product => {
-                addProductToUI(product.text, product.category, product.completed);
-            });
-        }
-
-        function parseProduct(input) {
-            const text = input.trim();
-            
-            const patterns = [
-                /^(\d+)\s+(.+)$/,
-                /^(\d+)\s*шт\.?\s+(.+)$/i,
-                /^(\d+)\s*штук[иа]?\s+(.+)$/i,
-                /^(\d+)\s*кг\.?\s+(.+)$/i,
-                /^(\d+)\s*л\.?\s+(.+)$/i,
-                /^(\d+)\s*г\.?\s+(.+)$/i
-            ];
-            
-            for (let pattern of patterns) {
-                const match = text.match(pattern);
-                if (match) {
-                    const quantity = parseInt(match[1]);
-                    const name = match[2].trim();
-                    return { name, quantity };
-                }
-            }
-            
-            return { name: text, quantity: 1 };
-        }
-
-        function categorizeProduct(productName) {
-            const name = productName.toLowerCase();
-            
-            for (let categoryId in categories) {
-                const category = categories[categoryId];
-                for (let keyword of category.keywords) {
-                    if (name.includes(keyword)) {
-                        return categoryId;
-                    }
-                }
-            }
-            
-            return 'grocery';
-        }
-
-        function addProductToUI(productText, categoryId, isCompleted) {
-            isCompleted = isCompleted || false;
-            const category = categories[categoryId];
-            
-            let categorySection = document.querySelector('[data-category="' + categoryId + '"]');
-            
-            if (!categorySection) {
-                categorySection = createCategorySection(categoryId, category);
-                document.getElementById('categoriesContainer').appendChild(categorySection);
-            }
-            
-            const itemsContainer = categorySection.querySelector('.category-items');
-            const item = createProductItem(productText);
-            
-            if (isCompleted) {
-                item.classList.add('completed');
-                item.querySelector('.checkbox').classList.add('checked');
-            }
-            
-            itemsContainer.appendChild(item);
-            updateCategoryCount(categorySection);
-        }
-
-        function addProduct() {
-            const input = document.getElementById('productInput');
-            const inputText = input.value.trim();
-            
-            if (!inputText) return;
-            
-            const parsed = parseProduct(inputText);
-            const categoryId = categorizeProduct(parsed.name);
-            
-            let displayName = parsed.name;
-            if (parsed.quantity > 1) {
-                displayName += ' (' + parsed.quantity + ' шт)';
-            }
-            
-            let existingStatus = false;
-            if (currentRecipe !== 'main') {
-                const mainProducts = recipeData.main.products;
-                for (let i = 0; i < mainProducts.length; i++) {
-                    if (mainProducts[i].text === displayName) {
-                        existingStatus = mainProducts[i].completed;
-                        break;
-                    }
-                }
-            }
-            
-            addProductToUI(displayName, categoryId, existingStatus);
-            
-            if (currentRecipe !== 'main') {
-                let alreadyExists = false;
-                const mainProducts = recipeData.main.products;
-                for (let i = 0; i < mainProducts.length; i++) {
-                    if (mainProducts[i].text === displayName) {
-                        alreadyExists = true;
-                        break;
-                    }
-                }
-                
-                if (!alreadyExists) {
-                    recipeData.main.products.push({
-                        text: displayName,
-                        completed: existingStatus,
-                        category: categoryId
-                    });
-                }
-            }
-            
-            input.value = '';
-            saveCurrentRecipeData();
-            saveData();
-        }
-
-        function createCategorySection(categoryId, category) {
-            const section = document.createElement('div');
-            section.className = 'category-section';
-            section.setAttribute('data-category', categoryId);
-            
-            section.innerHTML = '<div class="category-header ' + category.class + '"><div class="category-title"><span style="font-size: 20px; margin-right: 8px;">' + category.icon + '</span>' + category.name + '</div><div class="category-count">0</div></div><div class="category-items"></div>';
-            
-            return section;
-        }
-
-        function createProductItem(productName) {
-            const item = document.createElement('div');
-            item.className = 'item';
-            
-            item.innerHTML = '<div class="checkbox" onclick="toggleItem(this)"></div><div class="item-text">' + productName + '</div><span class="delete-button" onclick="deleteItem(this)">×</span>';
-            
-            return item;
-        }
-
-        function toggleItem(checkbox) {
-            const item = checkbox.closest('.item');
-            const isChecked = checkbox.classList.contains('checked');
-            const productText = item.querySelector('.item-text').textContent;
-            
+    // Обновляем все элементы на странице
+    document.querySelectorAll('.item').forEach(itemElement => {
+        const itemText = itemElement.querySelector('.item-text').textContent.trim();
+        if (itemText.toLowerCase().replace(/\s+/g, ' ') === productText.toLowerCase().replace(/\s+/g, ' ')) {
+            const itemCheckbox = itemElement.querySelector('.checkbox');
             if (isChecked) {
-                checkbox.classList.remove('checked');
-                item.classList.remove('completed');
-                syncProductStatus(productText, false);
+                itemCheckbox.classList.add('checked');
+                itemElement.classList.add('completed');
             } else {
-                checkbox.classList.add('checked');
-                item.classList.add('completed');
-                syncProductStatus(productText, true);
+                itemCheckbox.classList.remove('checked');
+                itemElement.classList.remove('completed');
             }
-            
-            saveCurrentRecipeData();
-            saveData();
         }
+    });
 
-        function syncProductStatus(productText, isCompleted) {
-            for (let recipeId in recipeData) {
-                const products = recipeData[recipeId].products;
-                for (let i = 0; i < products.length; i++) {
-                    if (products[i].text === productText) {
-                        products[i].completed = isCompleted;
-                    }
-                }
+    saveCurrentRecipeData();
+    saveData();
+}
+
+function syncProductStatus(productText, isCompleted) {
+    for (let recipeId in recipeData) {
+        const products = recipeData[recipeId].products;
+        for (let i = 0; i < products.length; i++) {
+            if (products[i].text === productText) {
+                products[i].completed = isCompleted;
             }
-            
-            document.querySelectorAll('.item').forEach(itemElement => {
-                const itemText = itemElement.querySelector('.item-text').textContent;
-                if (itemText === productText) {
-                    const itemCheckbox = itemElement.querySelector('.checkbox');
-                    if (isCompleted) {
-                        itemCheckbox.classList.add('checked');
-                        itemElement.classList.add('completed');
-                    } else {
-                        itemCheckbox.classList.remove('checked');
-                        itemElement.classList.remove('completed');
-                    }
-                }
-            });
         }
+    }
+    document.querySelectorAll('.item').forEach(itemElement => {
+        const itemText = itemElement.querySelector('.item-text').textContent;
+        if (itemText === productText) {
+            const itemCheckbox = itemElement.querySelector('.checkbox');
+            if (isCompleted) {
+                itemCheckbox.classList.add('checked');
+                itemElement.classList.add('completed');
+            } else {
+                itemCheckbox.classList.remove('checked');
+                itemElement.classList.remove('completed');
+            }
+        }
+    });
+}
 
-        function deleteItem(deleteButton) {
-            const item = deleteButton.closest('.item');
-            const categorySection = deleteButton.closest('.category-section');
-            const productText = item.querySelector('.item-text').textContent;
-            
-            const currentProducts = recipeData[currentRecipe].products;
-            for (let i = currentProducts.length - 1; i >= 0; i--) {
-                if (currentProducts[i].text === productText) {
-                    currentProducts.splice(i, 1);
+function deleteItem(deleteButton) {
+    const item = deleteButton.closest('.item');
+    const categorySection = deleteButton.closest('.category-section');
+    const productText = item.querySelector('.item-text').textContent;
+    const currentProducts = recipeData[currentRecipe].products;
+    for (let i = currentProducts.length - 1; i >= 0; i--) {
+        if (currentProducts[i].text === productText) {
+            currentProducts.splice(i, 1);
+            break;
+        }
+    }
+    let existsInOtherRecipes = false;
+    for (let recipeId in recipeData) {
+        if (recipeId !== currentRecipe) {
+            const products = recipeData[recipeId].products;
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].text === productText) {
+                    existsInOtherRecipes = true;
                     break;
                 }
             }
-            
-            let existsInOtherRecipes = false;
-            for (let recipeId in recipeData) {
-                if (recipeId !== currentRecipe) {
-                    const products = recipeData[recipeId].products;
-                    for (let i = 0; i < products.length; i++) {
-                        if (products[i].text === productText) {
-                            existsInOtherRecipes = true;
-                            break;
-                        }
-                    }
-                    if (existsInOtherRecipes) break;
-                }
-            }
-            
-            if (!existsInOtherRecipes && currentRecipe !== 'main') {
-                const mainProducts = recipeData.main.products;
-                for (let i = mainProducts.length - 1; i >= 0; i--) {
-                    if (mainProducts[i].text === productText) {
-                        mainProducts.splice(i, 1);
-                        break;
-                    }
-                }
-            }
-            
-            item.remove();
-            updateCategoryCount(categorySection);
-            
-            const itemsContainer = categorySection.querySelector('.category-items');
-            if (itemsContainer.children.length === 0) {
-                categorySection.remove();
-            }
-            
-            saveData();
+            if (existsInOtherRecipes) break;
         }
-
-        function updateCategoryCount(categorySection) {
-            const items = categorySection.querySelectorAll('.item');
-            const countElement = categorySection.querySelector('.category-count');
-            countElement.textContent = items.length;
-        }
-
-        function handleTouchStart(e) {
-            if (currentRecipe === 'main') return;
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        }
-
-        function handleTouchEnd(e) {
-            if (currentRecipe === 'main' || !touchStartX || !touchStartY) return;
-
-            let touchEndX = e.changedTouches[0].clientX;
-            let touchEndY = e.changedTouches[0].clientY;
-            
-            let diffX = touchStartX - touchEndX;
-            let diffY = touchStartY - touchEndY;
-            
-            if (Math.abs(diffX) > Math.abs(diffY) && diffX > 80) {
-                e.preventDefault();
-                switchToRecipe('main');
+    }
+    if (!existsInOtherRecipes && currentRecipe !== 'main') {
+        const mainProducts = recipeData.main.products;
+        for (let i = mainProducts.length - 1; i >= 0; i--) {
+            if (mainProducts[i].text === productText) {
+                mainProducts.splice(i, 1);
+                break;
             }
-            
-            touchStartX = 0;
-            touchStartY = 0;
         }
+    }
+    item.remove();
+    updateCategoryCount(categorySection);
+    const itemsContainer = categorySection.querySelector('.category-items');
+    if (itemsContainer.children.length === 0) {
+        categorySection.remove();
+    }
+    saveData();
+}
 
-        // Инициализация
-        document.addEventListener('DOMContentLoaded', function() {
-            // Основной список
-            const mainStoryItem = document.getElementById('mainStoryItem');
-            mainStoryItem.addEventListener('click', () => switchToRecipe('main'));
+function updateCategoryCount(categorySection) {
+    const items = categorySection.querySelectorAll('.item');
+    const countElement = categorySection.querySelector('.category-count');
+    countElement.textContent = items.length;
+}
 
-            // Кнопка создания нового списка
-            const addNewRecipeButton = document.getElementById('addNewRecipeButton');
-            addNewRecipeButton.addEventListener('click', createNewRecipe);
+function handleTouchStart(e) {
+    if (currentRecipe === 'main') return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+}
 
-            // Кнопка добавления продукта
-            const addProductButton = document.getElementById('addProductButton');
-            addProductButton.addEventListener('click', addProduct);
+function handleTouchEnd(e) {
+    if (currentRecipe === 'main' || !touchStartX || !touchStartY) return;
+    let touchEndX = e.changedTouches[0].clientX;
+    let touchEndY = e.changedTouches[0].clientY;
+    let diffX = touchStartX - touchEndX;
+    let diffY = touchStartY - touchEndY;
+    if (Math.abs(diffX) > Math.abs(diffY) && diffX > 80) {
+        e.preventDefault();
+        switchToRecipe('main');
+    }
+    touchStartX = 0;
+    touchStartY = 0;
+}
 
-            // Ввод продукта по Enter
-            const productInput = document.getElementById('productInput');
-            productInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    addProduct();
-                }
-            });
+function loadData() {
+    try {
+        const savedData = localStorage.getItem('shoppingListApp');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            recipeData = data.recipeData || { main: { name: 'Список покупок', products: [] } };
+            currentRecipe = data.currentRecipe || 'main';
+            productCategories = data.productCategories || {};
+            restoreStories();
+            switchToRecipe(currentRecipe);
+        }
+    } catch (error) {
+        recipeData = { main: { name: 'Список покупок', products: [] } };
+        currentRecipe = 'main';
+    }
+}
 
-            // Обработка свайпа на мобильных устройствах
-            const contentArea = document.getElementById('contentArea');
-            contentArea.addEventListener('touchstart', handleTouchStart);
-            contentArea.addEventListener('touchend', handleTouchEnd);
-            
-            // Загружаем данные
-            loadData();
-            
-            if (document.querySelectorAll('.item').length > 0) {
-                saveCurrentRecipeData();
-            }
-            
-            document.querySelectorAll('.category-section').forEach(updateCategoryCount);
+// Модалка для создания нового списка
+function showNewRecipeModal() {
+    const modal = document.getElementById('newRecipeModal');
+    const input = document.getElementById('newRecipeNameInput');
+    modal.classList.add('visible');
+    input.value = '';
+    setTimeout(() => input.focus(), 200);
+}
+function hideNewRecipeModal() {
+    document.getElementById('newRecipeModal').classList.remove('visible');
+}
+function createNewRecipeFromModal() {
+    const input = document.getElementById('newRecipeNameInput');
+    const name = input.value.trim();
+    if (!name) {
+        input.focus();
+        return;
+    }
+    const recipeId = 'recipe_' + Date.now();
+    recipeData[recipeId] = { name: name, products: [] };
+    restoreStories();
+    switchToRecipe(recipeId);
+    saveData();
+    hideNewRecipeModal();
+}
+
+function startStoryLongPress(event, element) {
+    event.preventDefault();
+    longPressTimer = setTimeout(() => {
+        const recipeId = element.getAttribute('data-recipe');
+        if (recipeId !== 'main') {
+            deleteRecipe(recipeId);
+        }
+    }, 600);
+}
+
+function endStoryLongPress() {
+    if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+    }
+}
+
+
+function initNewRecipeModal() {
+    const cancelBtn = document.getElementById('cancelNewRecipeBtn');
+    const confirmBtn = document.getElementById('confirmNewRecipeBtn');
+    const modalInput = document.getElementById('newRecipeNameInput');
+    cancelBtn.addEventListener('click', hideNewRecipeModal);
+    confirmBtn.addEventListener('click', createNewRecipeFromModal);
+    modalInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') createNewRecipeFromModal();
+    });
+    const modal = document.getElementById('newRecipeModal');
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) hideNewRecipeModal();
+    });
+}
+
+function addProduct() {
+    const input = document.getElementById('productInput');
+    const inputText = input.value.trim();
+    if (!inputText) return;
+
+    const parsed = parseProduct(inputText);
+    const normalizedName = parsed.name.trim().toLowerCase().replace(/\s+/g, ' ');
+
+    // Формируем имя для отображения (первая буква большая)
+    let displayName = parsed.name.trim().charAt(0).toUpperCase() + parsed.name.trim().slice(1).toLowerCase();
+    if (parsed.quantity > 1) {
+        displayName += ' (' + parsed.quantity + ' шт)';
+    }
+
+    const categoriesToUse = Object.keys(productCategories).length > 0 ? productCategories : categories;
+    const categoryId = categorizeProduct(parsed.name, categoriesToUse);
+
+    // Проверяем, какой сейчас список активен
+    if (currentRecipe === 'main') {
+        // Проверяем только основной список на дубли
+        const existsInMain = recipeData.main.products.some(
+            prod => prod.text.trim().toLowerCase().replace(/\s+/g, ' ') === normalizedName
+        );
+        if (existsInMain) {
+            input.value = '';
+            return;
+        }
+        // Добавляем в основной список
+        addProductToUI(displayName, categoryId, false);
+        recipeData.main.products.push({
+            text: displayName,
+            completed: false,
+            category: categoryId
         });
+    } else {
+        // Проверяем на дубли внутри текущего рецепта
+        const existsInRecipe = recipeData[currentRecipe].products.some(
+            prod => prod.text.trim().toLowerCase().replace(/\s+/g, ' ') === normalizedName
+        );
+        if (existsInRecipe) {
+            input.value = '';
+            return;
+        }
+        // Добавляем в рецепт
+        addProductToUI(displayName, categoryId, false);
+        recipeData[currentRecipe].products.push({
+            text: displayName,
+            completed: false,
+            category: categoryId
+        });
+        // И если такого ещё нет в основном списке — добавляем туда тоже
+        const existsInMain = recipeData.main.products.some(
+            prod => prod.text.trim().toLowerCase().replace(/\s+/g, ' ') === normalizedName
+        );
+        if (!existsInMain) {
+            recipeData.main.products.push({
+                text: displayName,
+                completed: false,
+                category: categoryId
+            });
+        }
+    }
+    input.value = '';
+    saveCurrentRecipeData();
+    saveData();
+}
+
+
+
+// Основная инициализация
+document.addEventListener('DOMContentLoaded', async function() {
+    document.getElementById('mainStoryItem').addEventListener('click', () => switchToRecipe('main'));
+    document.getElementById('addNewRecipeButton').addEventListener('click', showNewRecipeModal);
+    document.getElementById('addProductButton').addEventListener('click', addProduct);
+    document.getElementById('productInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addProduct();
+    });
+    const contentArea = document.getElementById('contentArea');
+    contentArea.addEventListener('touchstart', handleTouchStart);
+    contentArea.addEventListener('touchend', handleTouchEnd);
+    initNewRecipeModal();
+    await loadProductDatabase();
+    loadData();
+    if (document.querySelectorAll('.item').length > 0) {
+        saveCurrentRecipeData();
+    }
+    document.querySelectorAll('.category-section').forEach(updateCategoryCount);
+});
     </script>
 </body>
 </html>
+
