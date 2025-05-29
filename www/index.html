@@ -746,6 +746,16 @@ function startStoryLongPress(event, element) {
     }, 600);
 }
 
+function deleteRecipe(recipeId) {
+    if (!recipeData[recipeId]) return;
+    if (confirm('Удалить список "' + recipeData[recipeId].name + '"?')) {
+        delete recipeData[recipeId];
+        restoreStories(); // обновляем истории (сторис)
+        switchToRecipe('main'); // переключаемся на основной список
+        saveData(); // сохраняем изменения
+    }
+}
+
 function endStoryLongPress() {
     if (longPressTimer) {
         clearTimeout(longPressTimer);
